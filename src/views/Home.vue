@@ -1,13 +1,13 @@
 <template>
-    <router-view></router-view>
+    <div class = "font-primary">
+        hello world
+    </div>
 </template>
 
 <script>
     export default {
-        components: {
-        }
-    }
 
+    }
 </script>
 
 <style scoped>
