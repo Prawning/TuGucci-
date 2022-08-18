@@ -12,7 +12,7 @@
 
 <style>
     html, body {
-        @apply bg-primary mt-0 pt-0;
+        @apply bg-primary mt-0 pt-0 overflow-x-hidden;
     }
 
     ::-webkit-scrollbar {
