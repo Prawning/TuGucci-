@@ -1,11 +1,11 @@
 <template>
     <div class="w-screen h-screen flex flex-col items-center justify-center">
         <div class="flex flex-col w-[70vw]">
-            <div class="text-9xl font-primary text-secondary">
+            <div class="text-8xl font-primary text-secondary">
                 {{questions[page].question}}
             </div>
 
-            <div class="text-6xl font-secondary text-quinary mt-20">
+            <div class="text-3xl font-secondary text-quinary mt-20">
                 {{questions[page].description}}
             </div>
 
@@ -14,6 +14,10 @@
                     {{options}}
                 </div>
             </div>
+
+        </div>
+        <div @click="$router.push('/home')" class="absolute top-10 right-10 rounded-xl text-3xl font-secondary text-quaternary exit p-10">
+            Pause the Questionnaire
         </div>
     </div>
 </template>
@@ -24,70 +28,58 @@
             return {
                 page: 1,
                 option: 0,
-                questions: {}
-            }
-        },
-        methods: {
-            selected_option,
-        },
-        mounted() {
-            this.questions = questions;
-            console.log(this.questions[1])
-        }
-    }
-    // todo finish this
-    var questions = {1: {question: "Have you eaten in the last four hours?", 
+                questions: {1: {question: "Have you eaten in the last four hours?", 
                          answers : ["Yes! Next question", "I could use a snack...", "No, I need a meal"], 
-                         redirects : ["next", 100, 101]},
+                         redirects : [2, 100, 101]},
                      2: {question: "Have you taken any medication you need?", 
                          answers: ["Yes! I am all caught up", "No, I need to take my meds"], 
-                         redirects: ["next", 102]},
+                         redirects: [3, 102]},
                      3: {question: "Can you take a quess at how many hours you've slept out of the last 24?", 
                             description: "Everyone is an individual with different sleep schedules, but most people need 8 hours of relatively uninterrupted sleep.\
                                             If you had les than that, and/or woke up frequently, and/or had nightmares, it might help you to take a nap",
                             answers: ["I'm well rested! Next question", "No, I need a nap"],
-                            redirects: ["next", 103]},
+                            redirects: [4, 103]},
                      4: {question: "Are you in pain?",
                          answers: ["No, my body feels fine", "Yes, something hurts"],
-                         redirects: ["next", 104]},
+                         redirects: [5, 104]},
                      5: {question: "Next, we're going to deal with other types of physical discomfort you may be in. \n Is something about your environment distressing or uncomfortable?",
                          answers: ["No, it seems fine here to me", "Yes, my surroundings are less than ideal."],
-                         redirects: ["next", 105]},
+                         redirects: [6, 105]},
                      6: {question: "Does your body feel uncomfortable, sweaty, or dirty?",
                          answers: ["No, I feel fine", "Yes, I feel icky, gross, or unclean"],
-                         redirects: ["next", 106]},
+                         redirects: [7, 106]},
                      7: {question: "Do you know why you're in a bad mood, or not feeling well emotionally? (Remember, any answer is okay!)",
                          description: "Now we've taken care of the physical reasons that you're not feeling well. Now we're going to deal with the emotional ones.\
                                         Obviously, this is a general guide, and can't pinpoint your exact problem. But troubleshooting is a good practice, and we're going to do our best together.\
                                         In my experience, most of the people who would need a flow chart like this have a mental health problem of some type, \
                                         so these questions are geared towards common mental health problems. You, of course, might have different needs, but starting here can't hurt.",
                          answers: ["No, I don't know the reason", "Yes, there's something on my mind."],
-                         redirects: ["next", 107]},
+                         redirects: [8, 107]},
                      8: {question: "Do you feel anxious, nervous, keyed-up, paranoid, scared, or on edge?",
-                         answers: ["I was feeling anxious, but I did my best to take care of myself. I'm ready for the next question!", "No, I don't feel very anxious.", "Yes, but I don't know why", "Yes, and there is a specfici reason"],
-                         redirects: ["next", "next", 108, 109]},
+                         answers: ["I was feeling anxious, but I did my best to take care of myself. I'm ready for the next question!", "No, I don't feel very anxious.", "Yes, but I don't know why", "Yes, and there is a specfic reason"],
+                         redirects: [9, 9, 108, 109]},
                      9: {question: "Do you feel triggered? Do you feel triggered? Are you having flashbacks? Is something traumatic or upsetting from the past weighing on your mind? Did you have a vivid nightmare?",
                          answers: ["No, I don't feel triggered","I was, but I did my best to take care of myself. I am ready for the next question!", "Yes, I feel triggered"],
-                         redirects: ["next", "next", 110]},
+                         redirects: [10, 10, 110]},
                      10: {question: "Are you feeling dissociated, depersonalized, or derealized? Do you feel far away, foggy, or unreal? Are you not sure who you are?",
                          answers: ["No, I don't feel like that", "I was, but I did my best to take care of myself. I am ready for the next question!", "Yes, I'm dissociated"],
-                         redirects: ["next", "next", 111]},
+                         redirects: [11, 11, 111]},
                      11: {question: "Are you feeling depressed, sad, or upset?", 
                          answers: ["No, I'm not very depressed", "Yes, I'm feeling depressed"],
-                         redirects: ["next", 112]},
+                         redirects: [12, 112]},
                      12: {question: "Are you feeling lonely or in need of attention?",
                          answers: ["No, I'm not very lonely. Next question!", "Yes, I'm feeling lonely"],
-                         redirects: ["next", 113]},
+                         redirects: [13, 113]},
                      13: {question: "Are you feeling foggy?",
                          answers: ["No, my head feels clear", "Yes, I feel foggy"],
-                         redirects: ["next", 114]},
+                         redirects: [14, 114]},
                      14: {question: "Do you have pets?", 
                          answers: ["No, no pets for me", "Yes, I have pets"],
-                         redirects: ["next", 115]},
+                         redirects: [15, 115]},
                      15: {question: "Take half an hour and do whatever you want to do right now. This can be anything: crafts, watching TV, laying on the couch, taking a walk... your choices are literally endless!\
                                      (Of course, don't do anything that's bad for you, like feeding addictions or harming yourself or others.)",
                          answers: ["I've had 30 minutes of fun. I'm ready for the next question!"], 
-                         redirects: ["next"]},
+                         redirects: [16]},
                      16: {question: "We've reached the end of this self care guide!",
                          description: "It's time to reassess. Maybe now that you've done all of these self care, you feel better -- great! Maybe you don't and that's fine too. But hopefully\
                                         you've cleared some things up, and you know what to do next to take care of yourself.\n You deserve self care, so even if it's hard, do your best! \n Good luck!"},
@@ -117,16 +109,27 @@
                           redirects: [5]},
                     105: {questions: "Are your surroundings the right temperature?",
                           answers: ["I'm just right", "It's too cold", "It's too hot"],
-                          redirects: [200, 201, 202]},
-                    106: {}           }
+                          redirects: [1, 1, 1]},
+                    106: {}}
+            }
+        },
+        methods: {
+            selected_option,
+        },
+        mounted() {
+        }
+    }
+    // todo finish this
                     
 
     function selected_option(index) {
-        if (questions[this.page].redirects[index] == "next") {
-            this.page += 1;
-        }
-        else {
-            this.page = questions[this.page].redirects[index];
-        }
+        this.page = this.questions[this.page].redirects[index];
     }
 </script>
+
+<style scoped>
+    .exit {
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+    }
+</style>

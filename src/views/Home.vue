@@ -7,7 +7,7 @@
         <div class="top_bar w-[70vw] flex justify-between px-10">
             <div class="flex flex-row gap-10">
                 <div class="achievement_toggle" @click=toggle_achievements>
-                    Today's Achievements!
+                    Today's Achievements! 
                 </div>
 
                 <div class="score mr-10" style="opacity: 0">
@@ -106,10 +106,14 @@
     }
 
     .links {
-        @apply text-3xl font-secondary text-quinary
+        @apply text-3xl font-secondary text-quaternary;
     }
 
     .top_bar {
         @apply text-5xl font-secondary text-quinary;
+    }
+
+    .achievement_toggle, .journal_toggle {
+        @apply text-5xl font-secondary text-quinary cursor-pointer;
     }
 </style>
