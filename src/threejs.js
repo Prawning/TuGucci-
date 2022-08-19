@@ -134,9 +134,9 @@ var vertices = new Float32Array(snow_count * 3);
 var color = new Float32Array(snow_count * 3);
 var scale = new Float32Array(snow_count);
 for (var i = 0; i < snow_count; i++) {
-    vertices[i] = (Math.random() - 0.5) * 50;
+    vertices[i] = (Math.random() - 0.5) * 80;
     vertices[i + 1] = Math.random() * 1000;
-    vertices[i + 2] = (Math.random() - 0.5) * 50;
+    vertices[i + 2] = (Math.random() - 0.5) * 80;
     color[i] = 1;
     color[i + 1] = 1;
     color[i + 2] = 1;
@@ -217,9 +217,9 @@ function animate_snow() {
         var index = i * 3 + 1;
         snow_geo.attributes.position.array[index] -= velocity;
         if (snow_geo.attributes.position.array[index] < -10) {
-            snow_geo.attributes.position.array[index - 1] = Math.random() * 50;
+            snow_geo.attributes.position.array[index - 1] = Math.random() * 80;
             snow_geo.attributes.position.array[index] = Math.random() * 100;
-            snow_geo.attributes.position.array[index + 1] = Math.random() * 50;
+            snow_geo.attributes.position.array[index + 1] = Math.random() * 80;
         }
     };
 };
