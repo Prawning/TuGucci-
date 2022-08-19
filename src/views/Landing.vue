@@ -25,9 +25,13 @@
     .button {
         @apply w-full h-full py-4 px-8 bg-quaternary text-4xl rounded-2xl text-white;
     }
-
+    
+    body {
+        @apply bg-primary;
+    }
     .main {
         background: url("../assets/landing/bg.svg") no-repeat;
-        background-size: cover;
+        /* background-size: cover; */
+        @apply bg-primary;
     }
 </style>

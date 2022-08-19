@@ -1,6 +1,6 @@
 <template>
     <div class="main flex flex-col items-center justify-center w-screen gap-10">
-        <h1 class="text-[10rem] text-secondary font-primary" v-bind:id="user">
+        <h1 class="text-[10rem] text-secondary font-primary title" v-bind:id="user">
             Everything will be gucci, {{user}}!
         </h1>
 
@@ -45,7 +45,7 @@
         </div>
 
         <div class="nav flex items-center justify-between w-[65vw]">
-            <router-link to="/questions" class="links">
+            <router-link to="/questions" class="links" @click="$emit('quest')">
                 Questionnaire
             </router-link>
 
@@ -72,6 +72,12 @@
         methods: {
             toggle_achievements,
             toggle_journal,
+        },
+        mounted() {
+            const title = document.querySelector(".title");
+            setTimeout(() => {
+                gsap.to(title, {opacity: 0, duration: 1});
+            }, 3000);
         }
     }
 
@@ -82,6 +88,7 @@
         }
         gsap.to(".score", {opacity: achievements, duration: 0.5});
         gsap.to(".list", {opacity: achievements, duration: 0.5});
+        this.$emit("achievements");
     }
 
     function toggle_journal() {
@@ -90,10 +97,15 @@
             toggle_achievements();
         }
         gsap.to(".journal", {opacity: journal, duration: 0.5});
+        this.$emit("book");
     }
 </script>
 
 <style scoped>
+
+    .title {
+        text-shadow: 2px 2px #000000;
+    }
 
     ul {
         background: rgba(255, 255, 255, 0.1);
@@ -115,5 +127,9 @@
 
     .achievement_toggle, .journal_toggle {
         @apply text-5xl font-secondary text-quinary cursor-pointer;
+    }
+
+    .main {
+        /* visibility: hidden; */
     }
 </style>

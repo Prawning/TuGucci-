@@ -16,7 +16,7 @@
             </div>
 
         </div>
-        <div @click="$router.push('/home')" class="absolute top-10 right-10 rounded-xl text-3xl font-secondary text-quaternary exit p-10">
+        <div @click=return_home() class="absolute top-10 right-10 rounded-xl text-3xl font-secondary text-quaternary exit p-10">
             Pause the Questionnaire
         </div>
     </div>
@@ -115,6 +115,7 @@
         },
         methods: {
             selected_option,
+            return_home,
         },
         mounted() {
         }
@@ -122,9 +123,14 @@
     // todo finish this
                     
 
+    function return_home() {
+        this.$emit('quest');
+        this.$router.push('/home');
+    }
     function selected_option(index) {
         this.page = this.questions[this.page].redirects[index];
     }
+
 </script>
 
 <style scoped>
