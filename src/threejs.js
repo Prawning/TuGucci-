@@ -4,10 +4,8 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
 import * as dat from 'lil-gui';
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-
-// const gui = new dat.GUI();
+var gui = new dat.GUI();
 
 var parameters = {
     width: window.innerWidth,
@@ -19,40 +17,43 @@ var parameters = {
     camera_book: camera_book,
 };
 
-// gui.add(parameters, 'camera_init');
-// gui.add(parameters, 'camera_goals');
-// gui.add(parameters, 'camera_fire');
-// gui.add(parameters, 'camera_book');
-var positions = {init : [-6.5, 2.5, -2.5, 0, 3, 0], goals : [-1.35, 2.4, 1.4, -1.35, 2.36, -0.68], fire : [-6.55, 1.2, -9, 2.07, 1.57, 0], book: [-4.85, 1.45, -8.3232, -3.9, -100, 0]}
+var positions = {init : [-6.5, 2.5, -2.5, 0, 3, 0], goals : [-1.36, 2.38, 1.47, -1.34, 2.29, -100.68], fire : [-6.55, 1.2, -9, 2.07, 1.57, 0], book: [-4.85, 1.45, -8.3232, -3.9, -100, 0]}
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(-6, 2, -2);
 const camera_target = new THREE.Vector3(0, 0, 0);
 const camera_group = new THREE.Group();
 camera_group.add(camera);
 scene.add(camera_group);
 camera.lookAt(camera_target);
+gui.add(camera.position, 'x').min(-10).max(10).step(0.01);
+gui.add(camera.position, 'y').min(-10).max(10).step(0.01);
+gui.add(camera.position, 'z').min(-10).max(10).step(0.01);
+gui.add(camera_target, 'x').min(-10).max(10).step(0.01);
+gui.add(camera_target, 'y').min(-10).max(10).step(0.01);
+gui.add(camera_target, 'z').min(-10).max(10).step(0.01);
 
 // ? Camera
 function camera_init() {
     gsap.to(camera.position, { x: positions.init[0], y: positions.init[1], z: positions.init[2], duration: 1, ease: "power4.inOut"});
-    gsap.to(camera_target, { x: positions.init[3], y: positions.init[4], z: positions.init[5], duration: 1, ease: "power4.inOut"});
+    gsap.to(camera_target, { x: positions.init[3], y: positions.init[4], z: positions.init[5], duration: 0.5, delay: 0.2, ease: "power4.inOut"});
 };
 
 function camera_goals() {
-    gsap.to(camera.position, { x: positions.goals[0], y: positions.goals[1], z: positions.goals[2], duration: 1, ease: "power4.inOut"});
-    gsap.to(camera_target, { x: positions.goals[3], y: positions.goals[4], z: positions.goals[5], duration: 1, ease: "power4.inOut"});
+    gsap.to(camera.position, { x: positions.goals[0], y: positions.goals[1], z: positions.goals[2], duration: 1, ease: "power1.inOut"});
+    gsap.to(camera_target, { x: positions.goals[3], y: positions.goals[4], z: positions.goals[5], duration: 1, delay: 0.5, ease: "power4.inOut"});
 };
 
 function camera_fire() {
     gsap.to(camera.position, { x: positions.fire[0], y: positions.fire[1], z: positions.fire[2], duration: 1, ease: "power4.inOut"});
-    gsap.to(camera_target, { x: positions.fire[3], y: positions.fire[4], z: positions.fire[5], duration: 1, ease: "power4.inOut"});
+    gsap.to(camera_target, { x: positions.fire[3], y: positions.fire[4], z: positions.fire[5], duration: 1, delay: 0.5, ease: "power4.inOut"});
 };
 
 function camera_book() {
-    gsap.to(camera.position, { x: positions.book[0], y: positions.book[1], z: positions.book[2], duration: 1, ease: "power4.inOut"});
-    gsap.to(camera_target, { x: positions.book[3], y: positions.book[4], z: positions.book[5], duration: 1, ease: "power4.inOut"});
+    gsap.to(camera.position, { x: positions.book[0], y: positions.book[1], z: positions.book[2], duration: 1, delay: 1, ease: "power4.inOut"});
+    gsap.to(camera_target, { x: positions.book[3], y: positions.book[4], z: positions.book[5], duration: 1, delay: 1.5, ease: "power4.inOut"});
 };
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -63,15 +64,6 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ReinhardToneMapping;
 renderer.toneMappingExposure = 0.4;
 renderer.setClearAlpha(0);
-
-// const controls = new OrbitControls(camera, canvas);
-
-var composer = new EffectComposer(renderer);
-var renderPass = new RenderPass(scene, camera);
-composer.addPass(renderPass);
-var saoPass = new SAOPass(scene, camera, false, true);
-saoPass.params.saoIntensity = 0.003;
-// composer.addPass(saoPass);
 
 const light = new THREE.AmbientLight(0xffffff, 10);
 scene.add(light);
@@ -137,13 +129,13 @@ scene.fog = fog;
 
 // ? Snow
 const snow_geo = new THREE.BufferGeometry();
-const snow_count = 10000;
+const snow_count = 20000;
 var vertices = new Float32Array(snow_count * 3);
 var color = new Float32Array(snow_count * 3);
 var scale = new Float32Array(snow_count);
 for (var i = 0; i < snow_count; i++) {
     vertices[i] = (Math.random() - 0.5) * 50;
-    vertices[i + 1] = Math.random() * 50;
+    vertices[i + 1] = Math.random() * 1000;
     vertices[i + 2] = (Math.random() - 0.5) * 50;
     color[i] = 1;
     color[i + 1] = 1;
@@ -152,6 +144,7 @@ for (var i = 0; i < snow_count; i++) {
 };
 
 snow_geo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+snow_geo.setAttribute('oPosition', new THREE.BufferAttribute(vertices, 3));
 snow_geo.setAttribute('color', new THREE.BufferAttribute(color, 3));
 snow_geo.setAttribute('aScale', new THREE.BufferAttribute(scale, 1));
 import snow_vertex from './assets/shaders/snow/vertex.glsl?raw';
@@ -203,13 +196,14 @@ function animate_camera() {
         if (prev_quest == 0) {
             camera_fire();
         } else {
-            camera_init();
+            camera_fire();
         }
     }
 
     if (canvas.dataset.book != prev_book) {
         prev_book = canvas.dataset.book;
         if (prev_book == 0) {
+            camera_fire();
             camera_book();
         } else {
             camera_init();
@@ -217,17 +211,31 @@ function animate_camera() {
     }
 }
 
+function animate_snow() {
+    var velocity = 0.003;
+    for (var i = 0; i < snow_count; i++) {
+        var index = i * 3 + 1;
+        snow_geo.attributes.position.array[index] -= velocity;
+        if (snow_geo.attributes.position.array[index] < -10) {
+            snow_geo.attributes.position.array[index - 1] = Math.random() * 50;
+            snow_geo.attributes.position.array[index] = Math.random() * 100;
+            snow_geo.attributes.position.array[index + 1] = Math.random() * 50;
+        }
+    };
+};
+
 //? Animation
 const clock = new THREE.Clock();
 function loop() {
     const elapsedTime = clock.getElapsedTime();
-    snow_mat.uniforms.uTime.value = elapsedTime;
-    composer.render();
-    requestAnimationFrame(loop);
+    renderer.render(scene, camera);
     animate_camera();
-    gsap.to(camera_group.position, { y: -cursor.y * 0.1, duration: 0.06, ease: "power4.inOut"});
+    // gsap.to(camera_group.position, { y: -cursor.y * 0.1, duration: 0.06, ease: "power4.inOut"});
     camera.lookAt(camera_target);
     mixer.update(0.001);
+    requestAnimationFrame(loop);
+    animate_snow();
+    snow_geo.attributes.position.needsUpdate = true;
 };
 
 loading_manager.onLoad = () => {

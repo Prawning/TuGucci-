@@ -1,6 +1,6 @@
 <template>
     <div class="w-screen h-screen flex flex-col items-center justify-center">
-        <div class="flex flex-col w-[70vw]">
+        <div class="flex flex-col w-[70vw] questions py-40 px-10 rounded-3xl shadow-lg">
             <div class="text-8xl font-primary text-secondary">
                 {{questions[page].question}}
             </div>
@@ -137,5 +137,10 @@
     .exit {
         background: rgba(255, 255, 255, 0.1);
         cursor: pointer;
+    }
+
+    .questions {
+        background: rgba(255, 255, 255, 0.01);
+        backdrop-filter: blur(50px);
     }
 </style>
