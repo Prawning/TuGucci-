@@ -10,6 +10,9 @@ const routes = [{
         path: "/",
         name: "Welcome",
         component: Landing,
+        meta: {
+            redirectIfLoggedIn: true
+        }
     }, {
         path: "/home",
         name: "Home",
@@ -67,6 +70,12 @@ router.beforeEach(async (to, from, next) => {
             alert("Please login to view this page");
             next("/");
         }  
+    } else if (to.matched.some((record) => record.meta.redirectIfLoggedIn)) {
+        if (await get_curr_user()) {
+            next("/home");
+        } else {
+            next();
+        }
     } else {
         next();
     }

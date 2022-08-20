@@ -29,6 +29,8 @@
     body {
         @apply bg-primary;
     }
-    .main {
+    
+    h1 {
+        text-shadow: 1px 1px black;
     }
 </style>

@@ -6,8 +6,8 @@
             </button>
         </div>
     </div>
-    <router-view class="w-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle />
-    <canvas class="webgl" data-ach=1 data-quest=1 data-book=1></canvas>
+    <router-view class="w-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle @init=init_toggle />
+    <canvas class="webgl" data-logged=0 data-ach=1 data-quest=1 data-book=1></canvas>
 </template>
 
 <script>
@@ -22,6 +22,7 @@
             achievement_toggle,
             quest_toggle,
             book_toggle,
+            init_toggle,
             logout,
         },
         mounted() {
@@ -32,7 +33,7 @@
                 } else {
                     isLoggedIn.value = false;
                 }
-            })
+            });
         },
         data() {
             return {
@@ -56,12 +57,18 @@
         canvas.dataset.book = 1 - canvas.dataset.book;
     }
 
+    function init_toggle() {
+        const canvas = document.querySelector(".webgl");
+        canvas.dataset.logged = 1 - canvas.dataset.logged;
+    }
+
     function logout() {
         signOut(auth).then(() => {
             console.log("Signed out");
         }).catch((error) => {
             console.log(error);
         });
+        window.location.href = "/";
     }
 
 </script>

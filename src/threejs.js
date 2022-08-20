@@ -3,9 +3,9 @@ import gsap from 'gsap';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
-import * as dat from 'lil-gui';
+// import * as dat from 'lil-gui';
 
-var gui = new dat.GUI();
+// var gui = new dat.GUI();
 
 var parameters = {
     width: window.innerWidth,
@@ -17,23 +17,23 @@ var parameters = {
     camera_book: camera_book,
 };
 
-var positions = {init : [-6.5, 2.5, -2.5, 0, 3, 0], goals : [-1.36, 2.38, 1.47, -1.34, 2.29, -100.68], fire : [-6.55, 1.2, -9, 2.07, 1.57, 0], book: [-4.85, 1.45, -8.3232, -3.9, -100, 0]}
+var positions = {init : [-6.5, 2.5, -2.5, 0, 3, 0], goals : [-1.36, 2.38, 1.47, -1.34, 2.29, -100.68], fire : [-6.55, 1.2, -9, 2.07, 1.57, 0], book: [-4.83, 1.45, -8.3232, -3.9, -100, 0], title:[10, 2, 0, 10 ,10 , -3]}
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(-6, 2, -2);
-const camera_target = new THREE.Vector3(0, 0, 0);
+camera.position.set(10, 2, 5);
+const camera_target = new THREE.Vector3(10, 10, 0);
 const camera_group = new THREE.Group();
 camera_group.add(camera);
 scene.add(camera_group);
 camera.lookAt(camera_target);
-gui.add(camera.position, 'x').min(-10).max(10).step(0.01);
-gui.add(camera.position, 'y').min(-10).max(10).step(0.01);
-gui.add(camera.position, 'z').min(-10).max(10).step(0.01);
-gui.add(camera_target, 'x').min(-10).max(10).step(0.01);
-gui.add(camera_target, 'y').min(-10).max(10).step(0.01);
-gui.add(camera_target, 'z').min(-10).max(10).step(0.01);
+// gui.add(camera.position, 'x').min(-10).max(10).step(0.01);
+// gui.add(camera.position, 'y').min(-10).max(10).step(0.01);
+// gui.add(camera.position, 'z').min(-10).max(10).step(0.01);
+// gui.add(camera_target, 'x').min(-10).max(10).step(0.01);
+// gui.add(camera_target, 'y').min(-10).max(10).step(0.01);
+// gui.add(camera_target, 'z').min(-10).max(10).step(0.01);
 
 // ? Camera
 function camera_init() {
@@ -55,6 +55,11 @@ function camera_book() {
     gsap.to(camera.position, { x: positions.book[0], y: positions.book[1], z: positions.book[2], duration: 1, delay: 1, ease: "power4.inOut"});
     gsap.to(camera_target, { x: positions.book[3], y: positions.book[4], z: positions.book[5], duration: 1, delay: 1.5, ease: "power4.inOut"});
 };
+
+function camera_title() {
+    gsap.to(camera.position, { x: positions.title[0], y: positions.title[1], z: positions.title[2], duration: 1, ease: "power4.inOut"});
+    gsap.to(camera_target, { x: positions.title[3], y: positions.title[4], z: positions.title[5], duration: 1, ease: "power4.inOut"});
+}
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setClearColor(0x000000);
@@ -181,6 +186,7 @@ window.addEventListener('mousemove', (e) => {
 var prev_ach = canvas.dataset.ach;
 var prev_quest = canvas.dataset.quest;
 var prev_book = canvas.dataset.book;
+var prev_logged = canvas.dataset.logged;
 function animate_camera() {
     if (canvas.dataset.ach != prev_ach) {
         prev_ach = canvas.dataset.ach;
@@ -209,13 +215,22 @@ function animate_camera() {
             camera_init();
         }
     }
+
+    if (canvas.dataset.logged != prev_logged) {
+        prev_logged = canvas.dataset.logged;
+        if (prev_logged == 0) {
+            camera_init();
+        } else {
+            camera_init();
+        }
+    }
 }
 
 function animate_snow() {
     var velocity = 0.003;
     for (var i = 0; i < snow_count; i++) {
         var index = i * 3 + 1;
-        snow_geo.attributes.position.array[index] -= velocity;
+        snow_geo.attributes.position.array[index] -= (velocity + Math.random() * 0.01);
         if (snow_geo.attributes.position.array[index] < -10) {
             snow_geo.attributes.position.array[index - 1] = Math.random() * 80 - 40;
             snow_geo.attributes.position.array[index] = Math.random() * 100;
@@ -239,6 +254,6 @@ function loop() {
 };
 
 loading_manager.onLoad = () => {
-    camera_init();
+    camera_title();
     loop();
 };

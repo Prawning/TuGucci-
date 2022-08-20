@@ -48,10 +48,11 @@
 <script setup>
     import { ref } from 'vue';
     import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+    import { addDoc, collection, getDocs, where, query } from "firebase/firestore";
+    import {db, auth} from "../main.js";
     import { useRouter } from 'vue-router';
     const router = useRouter();
     const email = ref("");
-    const username = ref("");
     const password = ref("");
     const confirm_password = ref("");
     const err_message = ref("");
@@ -59,12 +60,11 @@
 
     function register() {
         if (password.value == confirm_password.value) {
-            const auth = getAuth();
             createUserWithEmailAndPassword(auth, email.value, password.value)
             .then((userCredential) => {
-                // Signed in 
                 err_message.value = "";
                 const user = userCredential.user;
+                create_user(user.uid, email.value, email.value);
                 router.push({name: "Home"});
             })
             .catch((error) => {
@@ -91,7 +91,8 @@
     function google_register() {
         const provider = new GoogleAuthProvider();
         signInWithPopup(getAuth(), provider)
-            .then((result) => {
+            .then(async (result) => {
+                create_user(result.user.uid, result.user.email, result.user.displayName);
                 router.push("/home");
             })
             .catch((error) => {
@@ -99,6 +100,82 @@
                 const errorMessage = error.message;
                 err_message.value = errorMessage;
             });
+    }
+
+    async function create_user(user_uid, email, username) {
+        const q = query(collection(db, "users"), where("user_uid", "==", user_uid));
+        const snapshot = await getDocs(q);
+        if (snapshot.empty) {
+            addDoc(collection(db, "users"), {
+                user_uid: user_uid,
+                email: email,
+                username: username,
+                score: 100,
+            });
+            create_journal(user_uid);
+            create_goals(user_uid);
+        }
+    }
+
+    function create_goals(user_ref) {
+        var goal_ref;
+        try {
+            goal_ref = addDoc(collection(db, "goals"), {
+                user_uid: user_ref,
+                goal: "Get out of bed!"
+            });
+        } catch (e) {
+            console.log(e);
+        };
+
+        try {
+            goal_ref = addDoc(collection(db, "goals"), {
+                user_uid: user_ref,
+                goal: "Drink Water"
+            });
+        } catch (e) {
+            console.log(e);
+        };
+
+        try {
+            goal_ref = addDoc(collection(db, "goals"), {
+                user_uid: user_ref,
+                goal: "Eat a meal"
+            });
+        } catch (e) {
+            console.log(e);
+        };
+
+        try {
+            goal_ref = addDoc(collection(db, "goals"), {
+                user_uid: user_ref,
+                goal: "Take a shower"
+            });
+        } catch (e) {
+            console.log(e);
+        };
+
+        try {
+            goal_ref = addDoc(collection(db, "goals"), {
+                user_uid: user_ref,
+                goal: "Get some air"
+            });
+        } catch (e) {
+            console.log(e);
+        };
+
+    }
+
+    function create_journal(user_ref) {
+        try {
+            addDoc(collection(db, "journals"), {
+                user_uid: user_ref,
+                date: new Date(),
+                entry: "Lorem"
+            });
+        } catch (e) {
+            console.log(e);
+        };
     }
 
     function close_error() {

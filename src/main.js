@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { getAuth } from 'firebase/auth';
 
 import './index.css'
@@ -19,6 +20,8 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+export {db, auth};
 
 const app = createApp(App)
 app.use(router)
