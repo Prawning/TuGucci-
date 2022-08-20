@@ -1,9 +1,20 @@
 <template>
+    <div class="nav_bar fixed top-0 left-0">
+        <div class="buttons flex gap-4">
+            <button class="button" v-if="isLoggedIn" @click="logout">
+                Logout
+            </button>
+        </div>
+    </div>
     <router-view class="w-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle />
     <canvas class="webgl" data-ach=1 data-quest=1 data-book=1></canvas>
 </template>
 
 <script>
+    import {getAuth, onAuthStateChanged, signOut} from "firebase/auth";
+    import {ref} from "vue";
+    var auth;
+    const isLoggedIn = ref(false);
     export default {
         components: {
         },
@@ -11,6 +22,22 @@
             achievement_toggle,
             quest_toggle,
             book_toggle,
+            logout,
+        },
+        mounted() {
+            auth = getAuth();
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    isLoggedIn.value = true;
+                } else {
+                    isLoggedIn.value = false;
+                }
+            })
+        },
+        data() {
+            return {
+                isLoggedIn,
+            }
         }
     }
 
@@ -27,6 +54,14 @@
     function book_toggle() {
         const canvas = document.querySelector(".webgl");
         canvas.dataset.book = 1 - canvas.dataset.book;
+    }
+
+    function logout() {
+        signOut(auth).then(() => {
+            console.log("Signed out");
+        }).catch((error) => {
+            console.log(error);
+        });
     }
 
 </script>

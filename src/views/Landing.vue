@@ -1,15 +1,15 @@
 <template>
     <div class="main flex flex-col items-center justify-center w-screen h-screen">
-        <h1 class="font-primary text-secondary text-[26rem]">
+        <h1 class="font-primary text-secondary text-center text-[26rem]">
             Tu Gucci?
         </h1>
 
         <div class="buttons flex flex-col font-secondary gap-4">
-            <button class="button" @click="$router.push('/home')">
+            <button class="button" @click="$router.push('/login')">
                 Sign In
             </button>
 
-            <button class="button">
+            <button class="button" @click="$router.push('/register')">
                 Sign Up
             </button>
         </div>
@@ -30,8 +30,5 @@
         @apply bg-primary;
     }
     .main {
-        background: url("../assets/landing/bg.svg") no-repeat;
-        /* background-size: cover; */
-        @apply bg-primary;
     }
 </style>
