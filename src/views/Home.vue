@@ -17,9 +17,9 @@
                 Questions
             </div>
 
-            <div class="cta" @click=test_api>
+            <!-- <div class="cta" @click=test_api>
                 Test API
-            </div>
+            </div> -->
         </div>
 
         <DailyGoals class="goal_board" :goal-toggle = goal_toggle />
@@ -116,17 +116,8 @@
         this.$emit("init");
     }
 
-    async function test_api() {
-        var uuid = auth.currentUser.uid;
-        var entry = "testing 1 2 3";
-        try {
-            var res = await axios.post(`/update_journal/${uuid}`, {
-                "entry" : entry
-            });
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+    function test_api() {
+        this.$router.push("/sentiment");    
     }
 </script>
 

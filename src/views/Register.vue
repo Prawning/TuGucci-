@@ -188,7 +188,7 @@
 
     async function create_bucket(user_uid) {
         try {
-            var data = await axios.post(`/create_bucket/${user_uid}`, {
+            var data = await axios.post(`https://sentiment-analysis-3arqmo4jra-as.a.run.app/create_bucket/${user_uid}`, {
             });
             console.log(data);   
 

@@ -5,6 +5,7 @@ import Landing from '../views/Landing.vue';
 import Questions from '../views/Question.vue';
 import Register from '../views/Register.vue';
 import Login from '../views/Login.vue';
+import Sentiment from '../views/Sentiment.vue';
 
 const routes = [{
         path: "/",
@@ -40,8 +41,14 @@ const routes = [{
         path: "/login",
         name: "Login",
         component: Login
+    }, {
+        path: "/sentiment",
+        name: "Sentiment",
+        component: Sentiment,
+        meta: {
+            requiresAuth: true,
+        }
     }
-    
 ];
 
 const router = createRouter({

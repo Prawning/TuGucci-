@@ -7,13 +7,13 @@ export default defineConfig({
     server: {
         proxy: {
             "/api": {
-                target: "http://localhost:8080",
+                target: "http://sentiment-analysis-3arqmo4jra-as.a.run.app",
             },
             "/create_bucket": {
-                target: "http://localhost:8080",
+                target: "http://sentiment-analysis-3arqmo4jra-as.a.run.app",
             },
             "/update_journal": {
-                target: "http://localhost:8080",
+                target: "http://sentiment-analysis-3arqmo4jra-as.a.run.app",
             }
         }
     }

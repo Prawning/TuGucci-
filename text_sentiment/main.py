@@ -54,7 +54,7 @@ def api(uuid):
     # get all blobs in bucket
     blobs = bucket.list_blobs()
     # for every blob, analyze sentiment
-    to_return = {}
+    to_return = []
     for blob in blobs:
         time_created = blob.time_created.strftime("%m/%d/%Y, %H:%M:%S")
         blob_content = str(blob.download_as_string())
@@ -62,11 +62,12 @@ def api(uuid):
         score = float(response.document_sentiment.score)
         magnitude = float(response.document_sentiment.magnitude)
         data = {
+            "time_created": time_created,
             "blob_content" : blob_content,
             "score" : score,
             "magnitude" : magnitude,
         }
-        to_return[time_created] = data
+        to_return.append(data)
 
     return to_return
 

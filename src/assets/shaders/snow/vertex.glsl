@@ -1,6 +1,7 @@
 uniform float uSize;
 uniform float uTime;
 uniform float time_passed;
+uniform float uRandom;
 attribute float aScale;
 varying vec3 vColor;
 varying float vAlpha;
@@ -11,7 +12,7 @@ void main() {
      */
 
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-    modelPosition.y -= uTime * 15.0;
+    modelPosition.y -= uTime * 11.0;
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition;
     gl_Position = projectedPosition;

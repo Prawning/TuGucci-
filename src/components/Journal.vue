@@ -40,7 +40,6 @@
     }) 
 
     function add_entry() {
-        console.log("adding")
         var value = document.getElementById("new_entry").value;
         if (value === "") {
             console.log("empty");
@@ -62,8 +61,8 @@
 
     function update_journal_bucket(entry) {
         var uuid = auth.currentUser.uid;
-        try {
-            var res = axios.post(`/update_journal/${uuid}`, {
+        try {      
+            var res = axios.post(`http://sentiment-analysis-3arqmo4jra-as.a.run.app/update_journal/${uuid}`, {
                 entry: entry,
             });
             console.log(res);

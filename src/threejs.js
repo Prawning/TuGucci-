@@ -122,7 +122,6 @@ import sceneURL from './assets/scene.glb?url';
 var mixer;
 model_loader.load(sceneURL, (glb) => {
     mixer = new THREE.AnimationMixer(glb.scene);
-    console.log(glb.animations);
     const animation = mixer.clipAction(glb.animations[0]);
     animation.play();
     scene.add(glb.scene);
@@ -139,7 +138,7 @@ var vertices = new Float32Array(snow_count * 3);
 var scale = new Float32Array(snow_count);
 for (var i = 0; i < snow_count; i++) {
     vertices[i * 3] = (Math.random() - 0.5) * 200;
-    vertices[i * 3 + 1] = Math.random() * 1000 + 100; // 100 to 1100
+    vertices[i * 3 + 1] = Math.random() * 1000 + 10;
     vertices[i * 3 + 2] = (Math.random() - 0.5) * 200;
     scale[i] = Math.random() * 10;
 };
@@ -156,6 +155,7 @@ const snow_mat = new THREE.ShaderMaterial({
     uniforms: {
         uTime: { value: 0 },
         uSize: { value: 40 * renderer.getPixelRatio() },
+        uRandom: {value: Math.random()},
         fogColor: { value: fog.color },
         fogNear: { value: 10 },
         fogFar: { value: 50 },
@@ -216,11 +216,8 @@ function animate_camera() {
 
     if (canvas.dataset.logged != prev_logged) {
         prev_logged = canvas.dataset.logged;
-        if (prev_logged == 0) {
-            camera_init();
-        } else {
-            camera_init();
-        }
+        camera_init();
+        gsap.to(camera_target, {x: positions.init[3], y: positions.init[4], z: positions.init[5], duration: 1, delay: 1});
     }
 }
 
@@ -228,7 +225,7 @@ function animate_camera() {
 //? Animation
 var clock = new THREE.Clock();
 function loop() {
-    const elapsedTime = clock.getElapsedTime() % 80.0;
+    const elapsedTime = clock.getElapsedTime() % 50.0;
     snow_mat.uniforms.uTime.value = elapsedTime;
     renderer.render(scene, camera);
     animate_camera();
@@ -236,8 +233,7 @@ function loop() {
     camera.lookAt(camera_target);
     mixer.update(0.001);
     requestAnimationFrame(loop);
-    // animate_snow();
-    // snow_geo.attributes.position.needsUpdate = true;
+    snow_geo.attributes.position.needsUpdate = true;
 };
 
 loading_manager.onLoad = () => {
