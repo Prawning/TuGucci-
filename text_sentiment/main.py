@@ -1,13 +1,12 @@
 import random
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from google.cloud import automl, storage, language_v1
+from google.cloud import storage, language_v1
 from google.oauth2 import service_account
 from datetime import date
-import os
 
 # google cloud storage
-GOOGLE_APPLICATION_CREDENTIALS = os.getcwd() + "\\text_sentiment\\ml_key.json"
+GOOGLE_APPLICATION_CREDENTIALS = "ml_key.json"
 credentials = service_account.Credentials.from_service_account_file(GOOGLE_APPLICATION_CREDENTIALS)
 storage_client = storage.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
 def new_bucket(uuid):
