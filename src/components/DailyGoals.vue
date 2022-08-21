@@ -7,8 +7,8 @@
         </ul>
 
         <div class="w-full z-10 flex flex-col items-center justify-center gap-10">
-            <textarea name="entry" id="new_entry" class="h-[15vh] w-full"></textarea>
-            <button class="entry_button w-full h-2/12 text-5xl">New Goal!</button>
+            <textarea name="entry" id="goal_new_entry" class="h-[15vh] w-full"></textarea>
+            <button id="add_goal" class="entry_button w-full h-2/12 text-5xl">New Goal!</button>
         </div>
 
         <div class="absolute bottom-0 text-9xl font-primary text-tertiary">
@@ -50,11 +50,11 @@
             goals.value = data;
         });
         document.querySelector(".goal_board").style.opacity = props.goalToggle;
-        document.querySelector(".entry_button").addEventListener("click", add_entry);
+        document.querySelector(".entry_button").addEventListener("click", add_goal);
     })
 
-    function add_entry() {
-        var value = document.getElementById("new_entry").value;
+    function add_goal() {
+        var value = document.getElementById("goal_new_entry").value;
         try {
             addDoc(collection(db, "goals"), {
                 user_uid: auth.currentUser.uid,
@@ -63,7 +63,7 @@
         } catch (e) {
             console.log(e);
         }
-        document.getElementById("new_entry").value = "";
+        document.getElementById("goal_new_entry").value = "";
     }
 
     async function increase_score() { // todo make animation

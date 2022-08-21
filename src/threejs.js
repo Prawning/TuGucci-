@@ -134,24 +134,23 @@ scene.fog = fog;
 
 // ? Snow
 const snow_geo = new THREE.BufferGeometry();
-const snow_count = 20000;
+const snow_count = 2000;
 var vertices = new Float32Array(snow_count * 3);
-var color = new Float32Array(snow_count * 3);
 var scale = new Float32Array(snow_count);
+var velocity = new Float32Array(snow_count *  3);
 for (var i = 0; i < snow_count; i++) {
-    vertices[i] = (Math.random() - 0.5) * 80 - 40;
-    vertices[i + 1] = Math.random() * 1000;
-    vertices[i + 2] = (Math.random() - 0.5) * 80 - 40;
-    color[i] = 1;
-    color[i + 1] = 1;
-    color[i + 2] = 1;
+    vertices[i * 3] = (Math.random() - 0.5) * 100;
+    vertices[i * 3 + 1] = Math.random() * 100;
+    vertices[i * 3 + 2] = (Math.random() - 0.5) * 100;
+    velocity[i * 3] = (Math.random() * 6 - 3) * 0.0015;
+    velocity[i * 3 + 1] = (Math.random() * 6 + 0.13) * 0.012;
+    velocity[i * 3 + 2] = (Math.random() * 6 - 3) * 0.0015;
     scale[i] = Math.random() * 10;
 };
 
 snow_geo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-snow_geo.setAttribute('oPosition', new THREE.BufferAttribute(vertices, 3));
-snow_geo.setAttribute('color', new THREE.BufferAttribute(color, 3));
 snow_geo.setAttribute('aScale', new THREE.BufferAttribute(scale, 1));
+snow_geo.setAttribute('velocity', new THREE.BufferAttribute(velocity, 3));
 import snow_vertex from './assets/shaders/snow/vertex.glsl?raw';
 import snow_fragment from './assets/shaders/snow/fragment.glsl?raw';
 import snow_texture_url from './assets/snowflakes.png?url';
@@ -161,11 +160,11 @@ const snow_mat = new THREE.ShaderMaterial({
     fragmentShader: snow_fragment,
     uniforms: {
         uTime: { value: 0 },
-        uSize: { value: 10 * renderer.getPixelRatio() },
+        uSize: { value: 40 * renderer.getPixelRatio() },
     },
     vertexColors: true,
     transparent: true,
-    // depthWrite: false,
+    depthWrite: false,
 });
 
 const snow = new THREE.Points(snow_geo, snow_mat);
@@ -227,14 +226,14 @@ function animate_camera() {
 }
 
 function animate_snow() {
-    var velocity = 0.003;
     for (var i = 0; i < snow_count; i++) {
-        var index = i * 3 + 1;
-        snow_geo.attributes.position.array[index] -= (velocity + Math.random() * 0.01);
-        if (snow_geo.attributes.position.array[index] < -10) {
-            snow_geo.attributes.position.array[index - 1] = Math.random() * 80 - 40;
-            snow_geo.attributes.position.array[index] = Math.random() * 100;
-            snow_geo.attributes.position.array[index + 1] = Math.random() * 80 - 40;
+        snow_geo.attributes.position.array[i * 3] -= snow_geo.attributes.velocity.array[i * 3];
+        snow_geo.attributes.position.array[i * 3 + 1] -= snow_geo.attributes.velocity.array[i * 3 + 1];
+        snow_geo.attributes.position.array[i * 3 + 2] -= snow_geo.attributes.velocity.array[i * 3 + 2];
+        if (snow_geo.attributes.position.array[i * 3 + 1] < -10) {
+            snow_geo.attributes.position.array[i * 3] = Math.random() * 100 - 50;
+            snow_geo.attributes.position.array[i * 3 + 1] = Math.random() * 100;
+            snow_geo.attributes.position.array[i * 3 + 2] = Math.random() * 100 - 50;
         }
     };
 };
@@ -243,6 +242,7 @@ function animate_snow() {
 const clock = new THREE.Clock();
 function loop() {
     const elapsedTime = clock.getElapsedTime();
+    snow_mat.uniforms.uTime.value = elapsedTime;
     renderer.render(scene, camera);
     animate_camera();
     // gsap.to(camera_group.position, { y: -cursor.y * 0.1, duration: 0.06, ease: "power4.inOut"});

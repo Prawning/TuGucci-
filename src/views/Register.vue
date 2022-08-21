@@ -51,6 +51,7 @@
     import { addDoc, collection, getDocs, where, query } from "firebase/firestore";
     import {db, auth} from "../main.js";
     import { useRouter } from 'vue-router';
+    import axios from 'axios';
     const router = useRouter();
     const email = ref("");
     const password = ref("");
@@ -106,14 +107,18 @@
         const q = query(collection(db, "users"), where("user_uid", "==", user_uid));
         const snapshot = await getDocs(q);
         if (snapshot.empty) {
+            var bucket_name = String(user_uid);
+            bucket_name = bucket_name.toLowerCase();
             addDoc(collection(db, "users"), {
                 user_uid: user_uid,
                 email: email,
                 username: username,
                 score: 100,
+                bucket_name: bucket_name
             });
             create_journal(user_uid);
             create_goals(user_uid);
+            create_bucket(bucket_name);
         }
     }
 
@@ -164,6 +169,8 @@
             console.log(e);
         };
 
+        console.log("goals created");
+
     }
 
     function create_journal(user_ref) {
@@ -173,6 +180,18 @@
                 date: new Date(),
                 entry: "Lorem"
             });
+        } catch (e) {
+            console.log(e);
+        };
+        console.log("journal created");
+    }
+
+    async function create_bucket(user_uid) {
+        try {
+            var data = await axios.post(`/create_bucket/${user_uid}`, {
+            });
+            console.log(data);   
+
         } catch (e) {
             console.log(e);
         };

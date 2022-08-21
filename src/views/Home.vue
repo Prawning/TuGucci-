@@ -16,6 +16,10 @@
             <div class="cta quest" @click=toggle_questions style="visibility:visible">
                 Questions
             </div>
+
+            <div class="cta" @click=test_api>
+                Test API
+            </div>
         </div>
 
         <DailyGoals class="goal_board" :goal-toggle = goal_toggle />
@@ -29,6 +33,7 @@
     import DailyGoals from '../components/DailyGoals.vue';
     import Journal from '../components/Journal.vue';
     import {auth} from '../main.js';
+    import axios from 'axios';
     var achievements = 0;
     var journal = 0;
     var questions = 0;
@@ -43,7 +48,8 @@
             toggle_achievements,
             toggle_journal,
             toggle_questions,
-            toggle_init
+            toggle_init,
+            test_api
         },
         mounted() {
             const title = document.querySelector(".title");
@@ -108,6 +114,19 @@
 
     function toggle_init() {
         this.$emit("init");
+    }
+
+    async function test_api() {
+        var uuid = auth.currentUser.uid;
+        var entry = "testing 1 2 3";
+        try {
+            var res = await axios.post(`/update_journal/${uuid}`, {
+                "entry" : entry
+            });
+            console.log(res);
+        } catch (e) {
+            console.log(e);
+        }
     }
 </script>
 

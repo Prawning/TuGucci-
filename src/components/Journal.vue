@@ -1,5 +1,5 @@
 <template>
-    <div class = "main_journal absolute w-[80vw] h-[80vh] flex items-center justify-center p-20 gap-20">
+    <div class = "main_journal absolute w-[80vw] h-[80vh] flex items-center justify-center p-20 gap-24">
         <ul class="flex flex-col flex-nowrap w-1/2 items-center h-[70vh] gap-2 overflow-x-hidden relative">
             <li v-for="entry in journal_entries" :key="entry">
                 {{entry.data}}
@@ -7,7 +7,7 @@
         </ul>
         <div class="w-1/2 h-[70vh] z-10 flex flex-col gap-10">
             <textarea name="entry" id="new_entry" class="w-full h-[60vh]"></textarea>
-            <button class="entry_button h-2/12 text-5xl">Add Entry</button>
+            <button id="journal_entry" class="entry_button h-2/12 text-5xl z-30">Add Entry</button>
         </div>
     </div>
 </template>
@@ -16,6 +16,7 @@
     import {collection, addDoc, query, where, onSnapshot} from "firebase/firestore";
     import {db, auth}from "../main.js";
     import {ref, onMounted} from "vue";
+    import axios from "axios";
     const props = defineProps({
         journalToggle: {
             required: true,
@@ -35,12 +36,14 @@
             journal_entries.value = data;
         });
         document.querySelector(".main_journal").style.opacity = props.journalToggle;
-        document.querySelector(".entry_button").addEventListener("click", add_entry);
+        document.querySelector("#journal_entry").addEventListener("click", add_entry);
     }) 
 
     function add_entry() {
+        console.log("adding")
         var value = document.getElementById("new_entry").value;
-        if (value == "") {
+        if (value === "") {
+            console.log("empty");
             return;
         };
 
@@ -53,7 +56,20 @@
         } catch (e) {
             console.log(e);
         }
+        var res = update_journal_bucket(value);
         document.getElementById("new_entry").value = "";
+    }
+
+    function update_journal_bucket(entry) {
+        var uuid = auth.currentUser.uid;
+        try {
+            var res = axios.post(`/update_journal/${uuid}`, {
+                entry: entry,
+            });
+            console.log(res);
+        } catch (e) {
+            console.log(e);
+        }
     }
     
 </script>
