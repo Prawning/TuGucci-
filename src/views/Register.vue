@@ -107,18 +107,14 @@
         const q = query(collection(db, "users"), where("user_uid", "==", user_uid));
         const snapshot = await getDocs(q);
         if (snapshot.empty) {
-            var bucket_name = String(user_uid);
-            bucket_name = bucket_name.toLowerCase();
             addDoc(collection(db, "users"), {
                 user_uid: user_uid,
                 email: email,
                 username: username,
                 score: 100,
-                bucket_name: bucket_name
             });
             create_journal(user_uid);
             create_goals(user_uid);
-            create_bucket(bucket_name);
         }
     }
 
@@ -168,30 +164,23 @@
         } catch (e) {
             console.log(e);
         };
-
-        console.log("goals created");
-
     }
 
-    function create_journal(user_ref) {
+    async function create_journal(user_ref) {
+        var sentiment_response = await axios.post(`https://textsentiment-3arqmo4jra-as.a.run.app/api`, {
+            entry: "Use this app!",
+        });
+
+        var score = sentiment_response.data.score;
+        var magnitude = sentiment_response.data.magnitude;
         try {
             addDoc(collection(db, "journals"), {
                 user_uid: user_ref,
                 date: new Date(),
-                entry: "Lorem"
+                entry: "Use this app!",
+                score: score,
+                magnitude: magnitude,
             });
-        } catch (e) {
-            console.log(e);
-        };
-        console.log("journal created");
-    }
-
-    async function create_bucket(user_uid) {
-        try {
-            var data = await axios.post(`https://sentiment-analysis-3arqmo4jra-as.a.run.app/create_bucket/${user_uid}`, {
-            });
-            console.log(data);   
-
         } catch (e) {
             console.log(e);
         };
