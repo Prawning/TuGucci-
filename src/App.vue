@@ -1,11 +1,5 @@
 <template>
-    <div class="nav_bar fixed top-0 left-0">
-        <div class="buttons flex gap-4">
-            <button class="button" v-if="isLoggedIn" @click="logout">
-                Logout
-            </button>
-        </div>
-    </div>
+    <NavBar/>
     <router-view class="w-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle @init=init_toggle />
     <canvas class="webgl" data-logged=0 data-ach=1 data-quest=1 data-book=1></canvas>
 </template>
@@ -13,17 +7,18 @@
 <script>
     import {getAuth, onAuthStateChanged, signOut} from "firebase/auth";
     import {ref} from "vue";
+    import NavBar from "./components/NavBar.vue";
     var auth;
     const isLoggedIn = ref(false);
     export default {
         components: {
+            NavBar
         },
         methods: {
             achievement_toggle,
             quest_toggle,
             book_toggle,
             init_toggle,
-            logout,
         },
         mounted() {
             auth = getAuth();
@@ -60,15 +55,6 @@
     function init_toggle() {
         const canvas = document.querySelector(".webgl");
         canvas.dataset.logged = 1 - canvas.dataset.logged;
-    }
-
-    function logout() {
-        signOut(auth).then(() => {
-            console.log("Signed out");
-        }).catch((error) => {
-            console.log(error);
-        });
-        window.location.href = "/";
     }
 
 </script>
