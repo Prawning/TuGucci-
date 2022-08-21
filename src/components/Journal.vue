@@ -39,36 +39,31 @@
         document.querySelector("#journal_entry").addEventListener("click", add_entry);
     }) 
 
-    function add_entry() {
+    async function add_entry() {
         var value = document.getElementById("new_entry").value;
         if (value === "") {
             console.log("empty");
             return;
         };
+        // run sentiment analysis immediately
+        var sentiment_response = await axios.post(`https://textsentiment-3arqmo4jra-as.a.run.app/api`, {
+            entry: value,
+        });
 
+        var score = sentiment_response.data.score;
+        var magnitude = sentiment_response.data.magnitude;
         try {
-            addDoc(collection(db, "journals"), {
+            addDoc(collection(db, "journals"), { // to firestore
                 user_uid: auth.currentUser.uid,
                 entry: value,
                 date: new Date(), // TODO format
+                score: score,
+                magnitude: magnitude,
             });
         } catch (e) {
             console.log(e);
         }
-        var res = update_journal_bucket(value);
         document.getElementById("new_entry").value = "";
-    }
-
-    function update_journal_bucket(entry) {
-        var uuid = auth.currentUser.uid;
-        try {      
-            var res = axios.post(`http://sentiment-analysis-3arqmo4jra-as.a.run.app/update_journal/${uuid}`, {
-                entry: entry,
-            });
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
     }
     
 </script>
@@ -88,9 +83,8 @@
 <style scoped>
     li {
         background: rgba(255, 255, 255, 0.21);
-        text-shadow: 1px 1px black;
         backdrop-filter: blur(10px);
-        @apply text-quaternary font-secondary text-5xl pb-4 w-full p-4 rounded-2xl;
+        @apply text-primary font-secondary text-5xl pb-4 w-full p-4 rounded-lg shadow-sm;
     }
 
     textarea {
@@ -100,5 +94,9 @@
 
     .entry_button {
         @apply bg-tertiary text-white rounded-3xl p-5 w-1/2 self-center;
+    }
+
+    #new_entry {
+        @apply p-20 text-primary font-primary;
     }
 </style>

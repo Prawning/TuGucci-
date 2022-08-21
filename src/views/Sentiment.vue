@@ -9,17 +9,28 @@
 <script setup>
     import {db, auth} from '../main.js';
     import {ref, onMounted} from 'vue';
+    import {collection, addDoc, query, where, onSnapshot} from "firebase/firestore";
     import axios from 'axios';
     const uuid = auth.currentUser.uid;
 
     const sentiments = ref([]);
-    async function load_sentiment(uuid) {
-        var res = await axios.get(`https://sentiment-analysis-3arqmo4jra-as.a.run.app/api/${uuid}`); // returns a json, {time_created : {content, score, magnitude}}
-        console.log(res.data);
-        sentiments.value = res.data;
+
+    function load_sentiment_firestore() {
+        var uuid = auth.currentUser.uid;
+        const q = query(collection(db, "journals"), where("user_uid", "==", uuid));
+        onSnapshot(q, (query_snapshot) => {
+            const data = [];
+            query_snapshot.forEach((doc) => {
+                var date = doc.data().date.toDate();
+                var score = doc.data().score;
+                data.push({time_created: date, score: score});
+            });
+            sentiments.value = data;
+        });
     }
 
     onMounted(() => {
-        load_sentiment(uuid);
+        // load_sentiment(uuid);
+        load_sentiment_firestore();
     })
 </script>

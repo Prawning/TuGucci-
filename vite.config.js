@@ -7,13 +7,16 @@ export default defineConfig({
     server: {
         proxy: {
             "/api": {
-                target: "http://sentiment-analysis-3arqmo4jra-as.a.run.app",
+                target: "https://textsentiment-3arqmo4jra-as.a.run.app",
             },
             "/create_bucket": {
-                target: "http://sentiment-analysis-3arqmo4jra-as.a.run.app",
+                target: "https://textsentiment-3arqmo4jra-as.a.run.app",
             },
             "/update_journal": {
-                target: "http://sentiment-analysis-3arqmo4jra-as.a.run.app",
+                target: "https://textsentiment-3arqmo4jra-as.a.run.app",
+            },
+            "/update": {
+                target: "https://textsentiment-3arqmo4jra-as.a.run.app",
             }
         }
     }

@@ -4,16 +4,12 @@ from flask_cors import CORS
 from google.cloud import storage, language_v1
 from google.oauth2 import service_account
 from datetime import date
+# import os 
 
 # google cloud storage
+# GOOGLE_APPLICATION_CREDENTIALS = os.getcwd() + "\\text_sentiment\\ml_key.json"
 GOOGLE_APPLICATION_CREDENTIALS = "ml_key.json"
 credentials = service_account.Credentials.from_service_account_file(GOOGLE_APPLICATION_CREDENTIALS)
-storage_client = storage.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
-def new_bucket(uuid):
-    bucket_name = uuid + "-bucket"
-    bucket = storage_client.create_bucket(bucket_name)
-    buckets = list(storage_client.list_buckets())
-    print(buckets)
 
 # google cloud sentiment
 def analyze_sentiment(text_content):
@@ -30,46 +26,22 @@ def analyze_sentiment(text_content):
 # Set up Flask
 app = Flask(__name__)
 CORS(app) # Allow cross-origin requests
-@app.route('/create_bucket/<uuid>', methods = ['POST'])
-def create_bucket(uuid):
-    new_bucket(uuid)
-    return "bucket created"
+@app.route("/")
+def hello():
+    return "This shit be working"
 
-@app.route('/update_journal/<uuid>', methods = ['POST'])
-def update_journal(uuid):
-    contents = request.json['entry']
-    bucket_name = uuid.lower() + "-bucket"
-    bucket = storage_client.bucket(bucket_name)
-    content_list = contents.split(" ")
-    blob_name = f"{str(date.today())}-{content_list[0]}-{random.randint(1,1000)}.txt"
-    blob = bucket.blob(blob_name)
-    blob.upload_from_string(contents)
-    return f"{blob_name} uploaded to {bucket_name}"
 
-@app.route("/api/<uuid>", methods = ['GET'])
-def api(uuid):
-    # use uuid to get bucket name
-    bucket_name = uuid.lower() + "-bucket"
-    bucket = storage_client.bucket(bucket_name)
-    # get all blobs in bucket
-    blobs = bucket.list_blobs()
-    # for every blob, analyze sentiment
-    to_return = []
-    for blob in blobs:
-        time_created = blob.time_created.strftime("%m/%d/%Y, %H:%M:%S")
-        blob_content = str(blob.download_as_string())
-        response = analyze_sentiment(blob_content)
-        score = float(response.document_sentiment.score)
-        magnitude = float(response.document_sentiment.magnitude)
-        data = {
-            "time_created": time_created,
-            "blob_content" : blob_content,
-            "score" : score,
-            "magnitude" : magnitude,
-        }
-        to_return.append(data)
-
-    return to_return
+@app.route("/api", methods = ['post']) # this performs sentiment anal ysis immediately, no need for buckets
+def api():
+    text = request.json['entry']
+    response = analyze_sentiment(text)
+    score = float(response.document_sentiment.score)
+    magnitude = float(response.document_sentiment.magnitude)
+    data = {
+        "score" : score,
+        "magnitude" : magnitude,
+    }
+    return data
 
 
 
