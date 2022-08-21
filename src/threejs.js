@@ -21,7 +21,7 @@ var positions = {init : [-6.5, 2.5, -2.5, 0, 3, 0], goals : [-1.36, 2.38, 1.47, 
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
 camera.position.set(10, 2, 5);
 const camera_target = new THREE.Vector3(10, 10, 0);
 const camera_group = new THREE.Group();
@@ -134,23 +134,18 @@ scene.fog = fog;
 
 // ? Snow
 const snow_geo = new THREE.BufferGeometry();
-const snow_count = 2000;
+const snow_count = 50000;
 var vertices = new Float32Array(snow_count * 3);
 var scale = new Float32Array(snow_count);
-var velocity = new Float32Array(snow_count *  3);
 for (var i = 0; i < snow_count; i++) {
-    vertices[i * 3] = (Math.random() - 0.5) * 100;
-    vertices[i * 3 + 1] = Math.random() * 100;
-    vertices[i * 3 + 2] = (Math.random() - 0.5) * 100;
-    velocity[i * 3] = (Math.random() * 6 - 3) * 0.0015;
-    velocity[i * 3 + 1] = (Math.random() * 6 + 0.13) * 0.012;
-    velocity[i * 3 + 2] = (Math.random() * 6 - 3) * 0.0015;
+    vertices[i * 3] = (Math.random() - 0.5) * 200;
+    vertices[i * 3 + 1] = Math.random() * 1000 + 100; // 100 to 1100
+    vertices[i * 3 + 2] = (Math.random() - 0.5) * 200;
     scale[i] = Math.random() * 10;
 };
 
 snow_geo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 snow_geo.setAttribute('aScale', new THREE.BufferAttribute(scale, 1));
-snow_geo.setAttribute('velocity', new THREE.BufferAttribute(velocity, 3));
 import snow_vertex from './assets/shaders/snow/vertex.glsl?raw';
 import snow_fragment from './assets/shaders/snow/fragment.glsl?raw';
 import snow_texture_url from './assets/snowflakes.png?url';
@@ -161,10 +156,14 @@ const snow_mat = new THREE.ShaderMaterial({
     uniforms: {
         uTime: { value: 0 },
         uSize: { value: 40 * renderer.getPixelRatio() },
+        fogColor: { value: fog.color },
+        fogNear: { value: 10 },
+        fogFar: { value: 50 },
     },
     vertexColors: true,
     transparent: true,
     depthWrite: false,
+    fog: true,
 });
 
 const snow = new THREE.Points(snow_geo, snow_mat);
@@ -225,23 +224,11 @@ function animate_camera() {
     }
 }
 
-function animate_snow() {
-    for (var i = 0; i < snow_count; i++) {
-        snow_geo.attributes.position.array[i * 3] -= snow_geo.attributes.velocity.array[i * 3];
-        snow_geo.attributes.position.array[i * 3 + 1] -= snow_geo.attributes.velocity.array[i * 3 + 1];
-        snow_geo.attributes.position.array[i * 3 + 2] -= snow_geo.attributes.velocity.array[i * 3 + 2];
-        if (snow_geo.attributes.position.array[i * 3 + 1] < -10) {
-            snow_geo.attributes.position.array[i * 3] = Math.random() * 100 - 50;
-            snow_geo.attributes.position.array[i * 3 + 1] = Math.random() * 100;
-            snow_geo.attributes.position.array[i * 3 + 2] = Math.random() * 100 - 50;
-        }
-    };
-};
 
 //? Animation
-const clock = new THREE.Clock();
+var clock = new THREE.Clock();
 function loop() {
-    const elapsedTime = clock.getElapsedTime();
+    const elapsedTime = clock.getElapsedTime() % 80.0;
     snow_mat.uniforms.uTime.value = elapsedTime;
     renderer.render(scene, camera);
     animate_camera();
@@ -249,8 +236,8 @@ function loop() {
     camera.lookAt(camera_target);
     mixer.update(0.001);
     requestAnimationFrame(loop);
-    animate_snow();
-    snow_geo.attributes.position.needsUpdate = true;
+    // animate_snow();
+    // snow_geo.attributes.position.needsUpdate = true;
 };
 
 loading_manager.onLoad = () => {
