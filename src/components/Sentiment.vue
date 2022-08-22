@@ -1,5 +1,5 @@
 <template>
-    <div class = "w-screen h-screen text-5xl flex flex-col gap-10 items-center justify-center">
+    <div class=" fixed main_chart w-[70vw] h-[70vh] text-5xl flex flex-col gap-10 items-center justify-center" style="opacity: 0">
         <div class="chart_container">
             <canvas id ="chartjs">
             </canvas>
@@ -10,8 +10,14 @@
 <script setup>
     import {db, auth} from '../main.js';
     import {ref, onMounted} from 'vue';
-    import {collection, addDoc, query, where, onSnapshot} from "firebase/firestore";
+    import {collection, addDoc, query, where, onSnapshot, doc} from "firebase/firestore";
     import Chart from 'chart.js/auto';
+    const props = defineProps({
+        chartToggle: {
+            required: true,
+        }
+    });
+
     const uuid = auth.currentUser.uid;
     const sentiments = ref([]);
 
@@ -105,9 +111,20 @@
     }
 
     onMounted(() => {
-        // load_sentiment(uuid);
         load_sentiment_firestore();
+        gsap.to(".main_chart", {opacity: props.chartToggle, duration: 1});
     })
+</script>
+
+<script>
+    import gsap from 'gsap';
+    export default {
+        watch: {
+            chartToggle: function () {
+                gsap.to(".main_chart", {opacity: this.chartToggle, duration: this.chartToggle});
+            }
+        }
+    }
 </script>
 
 <style scoped>

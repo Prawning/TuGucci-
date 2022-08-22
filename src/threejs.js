@@ -186,6 +186,7 @@ var prev_quest = canvas.dataset.quest;
 var prev_book = canvas.dataset.book;
 var prev_logged = canvas.dataset.logged;
 var prev_house = canvas.dataset.house;
+var prev_chart = canvas.dataset.chart;
 function animate_camera() {
     if (canvas.dataset.ach != prev_ach) {
         prev_ach = canvas.dataset.ach;
@@ -210,6 +211,15 @@ function animate_camera() {
         if (prev_book == 0) {
             camera_fire();
             camera_book();
+        } else {
+            camera_init();
+        }
+    }
+
+    if (canvas.dataset.chart != prev_chart) {
+        prev_chart = canvas.dataset.chart;
+        if (prev_chart == 0) {
+            camera_title();
         } else {
             camera_init();
         }

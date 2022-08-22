@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="sentiment nav" v-if="logged_in" @click="$router.push('/sentiment')">
+            <div id="sentiment_button" class="sentiment nav" v-if="logged_in">
                 <div class="text">
                     Sentiment
                 </div>

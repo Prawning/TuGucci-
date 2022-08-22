@@ -1,6 +1,6 @@
 <template>
     <div class = "main_journal absolute w-[85vw] h-[80vh] flex items-center justify-center p-20 gap-36">
-        <ul class="flex flex-col flex-nowrap w-1/2 items-center h-[70vh] gap-2 overflow-x-hidden relative">
+        <ul class="flex flex-col flex-nowrap w-1/2 items-center h-[70vh] gap-2 overflow-x-hidden relative z-10">
             <li v-for="entry in journal_entries" :key="entry">
                 {{entry.data}}
             </li>

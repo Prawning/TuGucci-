@@ -42,6 +42,8 @@
         <Journal id="daily_journal" :journal-toggle = journal_toggle />
 
         <Questions :quest-toggle = quest_toggle />
+
+        <Sentiment :chart-toggle = chart_toggle />
     </div>
 </template>
 
@@ -51,11 +53,13 @@
     import DailyGoals from '../components/DailyGoals.vue';
     import Journal from '../components/Journal.vue';
     import Questions from '../components/Questions.vue';
+    import Sentiment from '../components/Sentiment.vue';
     import {collection, getDocs, addDoc, query, where, updateDoc } from "firebase/firestore";
     import {db, auth} from '../main.js';
     var achievements = 0;
     var journal = 0;
     var questions = 0;
+    var chart = 0;
     gsap.registerPlugin(TextPlugin);
     export default {
         data: () => ({
@@ -64,12 +68,14 @@
             journal_toggle: 0,
             goal_toggle: 0,
             quest_toggle: 0,
+            chart_toggle: 0,
             toured: true,
         }),
         methods: {
             toggle_achievements,
             toggle_journal,
             toggle_questions,
+            toggle_chart,
             toggle_init,
             toggle_house,
             start_tour,
@@ -95,11 +101,13 @@
                 });
             });
             this.toggle_init();
+            document.querySelector("#sentiment_button").addEventListener("click", this.toggle_chart);
         },
         components: {
             DailyGoals,
             Journal,
             Questions,
+            Sentiment,
         },
     }
 
@@ -111,6 +119,7 @@
         1 - achievements ? visibility = "visible" : visibility = "hidden";
         gsap.to(".book", {opacity: 1-achievements, duration: 0.1});
         gsap.to(".quest", {opacity: 1-achievements, duration: 0.1});
+        gsap.to("#sentiment_button", {opacity: 1-questions, duration: 1});
         gsap.to(".book", {visibility: visibility, delay: 0.1, duration: 0.1});
         gsap.to(".quest", {visibility: visibility, delay: 0.1, duration: 0.1});
         this.$emit("achievements");
@@ -126,11 +135,16 @@
         journal = 1 - journal;
         gsap.to(".goal", {opacity: 1-journal, duration: 1}); // buttons fade out
         gsap.to(".quest", {opacity: 1-journal, duration: 1});
+        gsap.to("#sentiment_button", {opacity: 1-questions, duration: 1});
         1 - journal ? visibility = "visible" : visibility = "hidden";
         gsap.to(".goal", {visibility: visibility, delay: 0.1, duration: 0.1}); // prevent from clicking the buttons
         gsap.to(".quest", {visibility: visibility, delay: 0.1, duration: 0.1});
-        this.$emit("book"); // sends out event so threejs can be updated
-        this.journal_toggle = 1 - this.journal_toggle; // toggles journal
+        try {
+            this.$emit("book"); // sends out event so threejs can be updated
+            this.journal_toggle = 1 - this.journal_toggle; // toggles journal
+        } catch (e) {
+            console.log()
+        }
         setTimeout(() => {
             button.style.pointerEvents = "auto";
         }, 3000);
@@ -140,8 +154,9 @@
         var button = document.querySelector(".quest");
         button.style.pointerEvents = "none";
         questions = 1 - questions;
-        gsap.to(".goal", {opacity: 1-questions, duration: 1});
+        gsap.to(".goal", {opacity: 1-questions, duration: 1}); // disallow jumping to the other two
         gsap.to(".book", {opacity: 1-questions, duration: 1});
+        gsap.to("#sentiment_button", {opacity: 1-questions, duration: 1});
         gsap.to(".questions", {opacity: questions, duration: 0.5});
         1 - questions ? visibility = "visible" : visibility = "hidden";
         gsap.to(".goal", {visibility: visibility, delay: 0.1, duration: 0.1});
@@ -151,6 +166,16 @@
         setTimeout(() => {
             button.style.pointerEvents = "auto";
         }, 3000);
+    }
+
+    function toggle_chart() {
+        // untoggle other components
+        var main_bar = document.querySelector(".control_bar");
+        chart = 1 - chart;
+        gsap.to(".control_bar", {scale: 1-chart, duration: 0.5}); // prevent from clicking the buttons
+        this.$emit("chart");
+        this.chart_toggle = 1 - this.chart_toggle;
+
     }
 
     function toggle_init() {
