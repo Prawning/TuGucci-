@@ -65,7 +65,8 @@
             .then((userCredential) => {
                 err_message.value = "";
                 const user = userCredential.user;
-                create_user(user.uid, email.value, email.value);
+                var username = email.value.substring(0, email.value.indexOf("@"));
+                create_user(user.uid, email.value, username);
                 router.push({name: "Home"});
             })
             .catch((error) => {
@@ -112,6 +113,9 @@
                 email: email,
                 username: username,
                 score: 100,
+                page: 0,
+                toured: false,
+                profile_picture: "",
             });
             create_journal(user_uid);
             create_goals(user_uid);

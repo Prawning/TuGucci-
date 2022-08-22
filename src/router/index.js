@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Home from '../views/Home.vue';
 import Landing from '../views/Landing.vue';
-import Questions from '../views/Question.vue';
 import Register from '../views/Register.vue';
 import Login from '../views/Login.vue';
 import Sentiment from '../views/Sentiment.vue';
@@ -25,13 +24,6 @@ const routes = [{
         path: "/aww",
         beforeEnter() {
             location.href = "https://www.reddit.com/r/aww/";
-        }
-    }, {
-        path: "/questions",
-        name: "Questions",
-        component: Questions,
-        meta: {
-            requiresAuth: true,
         }
     }, {
         path: "/register",

@@ -1,5 +1,5 @@
 <template>
-    <div class="w-screen h-screen flex flex-col items-center justify-center">
+    <div class="main_quest w-[70vw] h-[70vh] flex flex-col items-center justify-center" style="opacity:0">
         <div class="flex flex-col w-[70vw] questions py-40 px-10 rounded-3xl shadow-lg">
             <div class="text-8xl font-primary text-secondary">
                 {{questions[page].question}}
@@ -16,13 +16,32 @@
             </div>
 
         </div>
-        <div @click=return_home() class="absolute top-10 right-10 rounded-xl text-3xl font-secondary text-quaternary exit p-10">
-            Pause the Questionnaire
+        <div @click=reset_page class="absolute top-10 right-10 rounded-xl text-3xl font-secondary text-quaternary exit p-10">
+            Redo Quiz!
         </div>
     </div>
 </template>
 
+<script setup>
+    import {auth, db} from "../main.js";
+    import { useRouter } from 'vue-router';
+    import {collection, addDoc, getDocs, query, where, updateDoc, onSnapshot} from "firebase/firestore";
+    const props = defineProps({
+        questToggle: {
+            required: true,
+        }
+    });
+</script>
+
+
+
 <script>
+    // read the user
+    import {auth, db} from "../main.js";
+    import { useRouter } from 'vue-router';
+    import {collection, addDoc, getDocs, query, where, updateDoc, onSnapshot} from "firebase/firestore";
+    import gsap from "gsap";
+    const router = useRouter();
     export default {
         data() {
             return {
@@ -102,6 +121,7 @@
                           redirects: [3]},
                     103: {question: "Take a nap. You can finish this self-care guide when you wake up.",
                           description: "Ideally, let yourself sleep naturally, and sleep until you wake up. Of course, this isn't always possible. Otherwise, set an alarm for yourself, with plenty of time to wake up and get yourself together between your nap and your responsibilities.",
+                          answers: ["I'm awake! I'm ready for the next question!"],
                           redirects: [4],},
                     104: {question: "If there is something your doctor has prescribed you for pain, you should take it or do it. For aches and pains, take an aspirin. You may also want to apply a heating pad or a cold pack on whatever hurts.",
                           description: "If you have a stomach ache, there are medications for that, like Pepto Bismol, and hot tea may also help. Be nice to your body, and try to 'replace' the unpleasant pain with some pleasant alternative sensations, such as good smells, and pleasurable textures.",
@@ -114,23 +134,45 @@
             }
         },
         methods: {
-            selected_option,
-            return_home,
+            async selected_option(index) {
+                    this.page = this.questions[this.page].redirects[index]; // update page
+                    // everytime page is updated, update the user's progress too on firestore
+                    var uuid = auth.currentUser.uid;
+                    var q = query(collection(db,"users"), where("user_uid", "==", uuid));
+                    var snapshot = await getDocs(q);
+                    snapshot.forEach((doc) => {
+                        updateDoc(doc.ref, {page: this.page});
+                    });
+                },
+            async reset_page() {
+                this.page = 1;
+                var q = query(collection(db,"users"), where("user_uid", "==", uuid));
+                var snapshot = await getDocs(q);
+                snapshot.forEach((doc) => {
+                    updateDoc(doc.ref, {page: this.page});
+                });
+            }
+        }, async mounted() {
+            var uuid = auth.currentUser.uid;
+            // get the user doc
+            var q = query(collection(db,"users"), where("user_uid", "==", uuid));
+            var snapshot = await getDocs(q);
+            snapshot.forEach((doc) => {
+                this.page = doc.data().page; // loads the current page of the user
+            });
+            console.log(this.questToggle);
+            document.querySelector(".main_quest").style.opacity = this.questToggle;
+
+            // todo check if new day and reset quiz
         },
-        mounted() {
+        watch: {
+            questToggle: function() {
+                var main = document.querySelector(".main_quest");
+                gsap.to(main, {opacity: this.questToggle, duration: 1.5 * this.questToggle});
+            }
         }
     }
-    // todo finish this
                     
-
-    function return_home() {
-        this.$emit('quest');
-        this.$router.push('/home');
-    }
-    function selected_option(index) {
-        this.page = this.questions[this.page].redirects[index];
-    }
-
 </script>
 
 <style scoped>

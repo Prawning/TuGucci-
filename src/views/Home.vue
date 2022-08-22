@@ -4,11 +4,11 @@
             Everything will be gucci, {{user}}!
         </h1>
 
-        <div class="floating_start text-[11rem] w-[30vw] h-[15vh] flex items-center justify-center rounded-xl text-primary text-center font-primary shadow-2xl z-10 cursor-pointer" @click=start_tour>
+        <div v-show=!toured class="floating_start text-[11rem] w-[30vw] h-[15vh] flex items-center justify-center rounded-xl text-primary text-center font-primary shadow-2xl z-10 cursor-pointer" @click=start_tour>
             Get Started
         </div>
 
-        <div class="fixed explainer w-[40vw] flex flex-col z-[9]" style="opacity: 0">
+        <div v-show=!toured class="fixed explainer w-[40vw] flex flex-col z-[9]" style="opacity: 0">
             <div class = "button_parent text w-full flex flex-col gap-10">
                 <p class ="para">
                     Welcome to TuGucci?, and relax yourself!
@@ -40,26 +40,31 @@
         <DailyGoals class="goal_board" :goal-toggle = goal_toggle />
 
         <Journal id="daily_journal" :journal-toggle = journal_toggle />
+
+        <Questions :quest-toggle = quest_toggle />
     </div>
 </template>
 
 <script>
     import gsap from 'gsap';
     import { TextPlugin } from "gsap/TextPlugin";
-    gsap.registerPlugin(TextPlugin);
     import DailyGoals from '../components/DailyGoals.vue';
     import Journal from '../components/Journal.vue';
-    import {auth} from '../main.js';
+    import Questions from '../components/Questions.vue';
+    import {collection, getDocs, addDoc, query, where, updateDoc } from "firebase/firestore";
+    import {db, auth} from '../main.js';
     var achievements = 0;
     var journal = 0;
     var questions = 0;
+    gsap.registerPlugin(TextPlugin);
     export default {
         data: () => ({
             user: "",
             score: 100,
             journal_toggle: 0,
             goal_toggle: 0,
-            toured: false,
+            quest_toggle: 0,
+            toured: true,
         }),
         methods: {
             toggle_achievements,
@@ -74,17 +79,27 @@
             setTimeout(() => {
                 gsap.to(title, {opacity: 0, duration: 1});
             }, 3000);
-            this.user = auth.currentUser.displayName;
-            if (!this.toured) {
-                console.log(this.toured);
-                document.querySelector(".nav_wrapper").style.scale = 0;
-                document.querySelector(".control_bar").style.scale = 0;
-            }
+
+            // get user document from firestore
+            var uuid = auth.currentUser.uid;
+            var q = query(collection(db, 'users'), where ("user_uid", "==", uuid));
+            getDocs(q).then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    this.user = doc.data().username;
+                    this.toured = doc.data().toured;
+                    this.page = doc.data().page;
+                    if (!this.toured) {
+                        document.querySelector(".control_bar").style.scale = 0;
+                        document.querySelector(".nav_wrapper").style.scale = 0;
+                    };
+                });
+            });
             this.toggle_init();
         },
         components: {
             DailyGoals,
             Journal,
+            Questions,
         },
     }
 
@@ -107,15 +122,15 @@
 
     function toggle_journal() {
         var button = document.querySelector(".book");
-        button.style.pointerEvents = "none";
+        button.style.pointerEvents = "none"; // prevent spam clicking
         journal = 1 - journal;
-        gsap.to(".goal", {opacity: 1-journal, duration: 1});
+        gsap.to(".goal", {opacity: 1-journal, duration: 1}); // buttons fade out
         gsap.to(".quest", {opacity: 1-journal, duration: 1});
         1 - journal ? visibility = "visible" : visibility = "hidden";
-        gsap.to(".goal", {visibility: visibility, delay: 0.1, duration: 0.1});
+        gsap.to(".goal", {visibility: visibility, delay: 0.1, duration: 0.1}); // prevent from clicking the buttons
         gsap.to(".quest", {visibility: visibility, delay: 0.1, duration: 0.1});
-        this.$emit("book");
-        this.journal_toggle = 1 - this.journal_toggle;
+        this.$emit("book"); // sends out event so threejs can be updated
+        this.journal_toggle = 1 - this.journal_toggle; // toggles journal
         setTimeout(() => {
             button.style.pointerEvents = "auto";
         }, 3000);
@@ -128,11 +143,14 @@
         gsap.to(".goal", {opacity: 1-questions, duration: 1});
         gsap.to(".book", {opacity: 1-questions, duration: 1});
         gsap.to(".questions", {opacity: questions, duration: 0.5});
-        1 - journal ? visibility = "visible" : visibility = "hidden";
+        1 - questions ? visibility = "visible" : visibility = "hidden";
         gsap.to(".goal", {visibility: visibility, delay: 0.1, duration: 0.1});
         gsap.to(".book", {visibility: visibility, delay: 0.1, duration: 0.1});
         this.$emit("quest");
-        this.$router.push("/questions");
+        this.quest_toggle = 1 - this.quest_toggle;
+        setTimeout(() => {
+            button.style.pointerEvents = "auto";
+        }, 3000);
     }
 
     function toggle_init() {
@@ -176,23 +194,23 @@
 
         // gsaps to tween between paras
         var journal_tween = gsap.to(text, {text: paras[0], duration: 3, delay: 1});
-        var journal_explainer = gsap.to(explainer, {width: "30vw", right: 300, zIndex: 100,  duration: 3, delay: 1});
+        var journal_explainer = gsap.to(explainer, {width: "30vw", right: 400, zIndex: 100,  duration: 1, delay: 1});
         journal_tween.pause();
         journal_explainer.pause();
 
         var goal_tween = gsap.to(text, {text: paras[1], duration: 1});
-        var goal_explainer = gsap.to(explainer, {width: "25vw", top: 10, left: 10, duration: 1});
+        var goal_explainer = gsap.to(explainer, {width: "25vw", top: "50%", left: 10, duration: 1});
         goal_tween.pause();
         goal_explainer.pause();
 
 
         var quest_tween = gsap.to(text, {text: paras[2], duration: 1});
-        var quest_explainer = gsap.to(explainer, {width: "25vw", top: 10, left: 10, duration: 1});
+        var quest_explainer = gsap.to(explainer, {width: "50vw", xPercent: -50, yPercent: -50, top:"50%", left:"50%", duration: 1});
         quest_tween.pause();
         quest_explainer.pause();
 
-        var outro_tween = gsap.to(text, {text: paras[3], duration: 1});
-        var outro_explainer = gsap.to(explainer, {width: "25vw", top: 10, left: 10, duration: 1});
+        var outro_tween = gsap.to(text, {text: paras[3], duration: 3});
+        var outro_explainer = gsap.to(explainer, {width: "25vw", duration: 1});
         outro_tween.pause();
         outro_explainer.pause();
 
@@ -201,13 +219,11 @@
 
         // show next button
         timeline.to(next_button, {opacity: 1, duration: 1, onComplete: ()=> {
-            next_button.addEventListener("click" ,() => {
-                console.log(i);
+            next_button.addEventListener("click" , async () => {
                 if (i > 0 && i < 3) {
                     var prev_func = functions[i-1];
                     prev_func();
                     setTimeout(() => {
-                        console.log("detoggled");
                         var to_run = functions[i];
                         to_run();
                         var tweens = tweens_array[i];
@@ -221,6 +237,20 @@
                     gsap.to(control_bar, {scale: 1, duration: 1});
                     const nav_bar = document.querySelector(".nav_wrapper");
                     gsap.to(nav_bar, {scale: 1, duration: 1});
+
+                    var uuid = auth.currentUser.uid;
+                    var q = query(collection(db, "users"), where("user_uid", "==", uuid));
+                    var snapshot = await getDocs(q);
+                    console.log("HERE")
+                    snapshot.forEach((doc) => {
+                        console.log(doc.data())
+                        updateDoc(doc.ref, {
+                            toured: true,
+                            page: 3
+                        });
+                    });
+
+                    this.toured = true;
                     next_button.remove();
                     text.remove();
                     explainer.remove();
@@ -235,10 +265,6 @@
                 }
             })
         }});
-
-        function display_ui() {
-            
-        }
     }
 </script>
 
