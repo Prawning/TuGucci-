@@ -1,7 +1,7 @@
 <template>
-    <NavBar/>
-    <router-view class="w-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle @init=init_toggle />
-    <canvas class="webgl" data-logged=0 data-ach=1 data-quest=1 data-book=1></canvas>
+    <NavBar />
+    <router-view class="w-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle @init=init_toggle @house=house_toggle />
+    <canvas class="webgl" data-logged=0 data-ach=1 data-quest=1 data-book=1 data-house=1></canvas>
 </template>
 
 <script>
@@ -19,6 +19,7 @@
             quest_toggle,
             book_toggle,
             init_toggle,
+            house_toggle
         },
         mounted() {
             auth = getAuth();
@@ -55,6 +56,11 @@
     function init_toggle() {
         const canvas = document.querySelector(".webgl");
         canvas.dataset.logged = 1 - canvas.dataset.logged;
+    }
+
+    function house_toggle() {
+        const canvas = document.querySelector(".webgl");
+        canvas.dataset.house = 1 - canvas.dataset.house;
     }
 
 </script>

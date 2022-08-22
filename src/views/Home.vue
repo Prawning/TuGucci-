@@ -1,10 +1,29 @@
 <template>
     <div class="main flex flex-col items-center justify-center w-screen h-screen gap-10">
-        <h1 class="text-[10rem] text-secondary font-primary title" v-bind:id="user">
+        <h1 class="fixed top-10 text-[10rem] text-secondary font-primary title" v-bind:id="user">
             Everything will be gucci, {{user}}!
         </h1>
 
-        <div class="control_bar fixed bottom-10 side_bar w-screen flex justify-evenly gap-10 text-5xl font-primary text-secondary">
+        <div class="floating_start text-[11rem] w-[30vw] h-[15vh] flex items-center justify-center rounded-xl text-primary text-center font-primary shadow-2xl z-10 cursor-pointer" @click=start_tour>
+            Get Started
+        </div>
+
+        <div class="fixed explainer w-[40vw] flex flex-col z-[9]" style="opacity: 0">
+            <div class = "button_parent text w-full flex flex-col gap-10">
+                <p class ="para">
+                    Welcome to TuGucci?, and relax yourself!
+                    Immerse yourself in this relaxing scene and let your mind wander.
+                    You can listen to the peaceful atmosphere, and enjoy the surroundings, to help calm you down.
+                    Or you can try one of our many features, to help you keep track of your mental health.
+                </p>
+                <div class="next_button" style="opacity: 0">
+                    Next
+                </div>
+            </div>
+
+        </div>
+
+        <div class="control_bar fixed bottom-10 side_bar w-screen flex justify-evenly gap-10 text-5xl font-primary text-secondary" style="transform: scale(1)">
             <div class="cta goal" @click=toggle_achievements style="visibility:visible">
                 View Today's Goals
             </div>
@@ -16,10 +35,6 @@
             <div class="cta quest" @click=toggle_questions style="visibility:visible">
                 Questions
             </div>
-
-            <!-- <div class="cta" @click=test_api>
-                Test API
-            </div> -->
         </div>
 
         <DailyGoals class="goal_board" :goal-toggle = goal_toggle />
@@ -30,10 +45,11 @@
 
 <script>
     import gsap from 'gsap';
+    import { TextPlugin } from "gsap/TextPlugin";
+    gsap.registerPlugin(TextPlugin);
     import DailyGoals from '../components/DailyGoals.vue';
     import Journal from '../components/Journal.vue';
     import {auth} from '../main.js';
-    import axios from 'axios';
     var achievements = 0;
     var journal = 0;
     var questions = 0;
@@ -43,13 +59,15 @@
             score: 100,
             journal_toggle: 0,
             goal_toggle: 0,
+            toured: false,
         }),
         methods: {
             toggle_achievements,
             toggle_journal,
             toggle_questions,
             toggle_init,
-            test_api
+            toggle_house,
+            start_tour,
         },
         mounted() {
             const title = document.querySelector(".title");
@@ -57,6 +75,11 @@
                 gsap.to(title, {opacity: 0, duration: 1});
             }, 3000);
             this.user = auth.currentUser.displayName;
+            if (!this.toured) {
+                console.log(this.toured);
+                document.querySelector(".nav_wrapper").style.scale = 0;
+                document.querySelector(".control_bar").style.scale = 0;
+            }
             this.toggle_init();
         },
         components: {
@@ -116,8 +139,106 @@
         this.$emit("init");
     }
 
+    function toggle_house() {
+        this.$emit("house")
+    }
+
     function test_api() {
         this.$router.push("/sentiment");    
+    }
+
+    function start_tour() {
+        var i = 0;
+        var functions = [this.toggle_journal, this.toggle_achievements, this.toggle_init, this.toggle_house];
+        // remove button
+        var button = document.querySelector(".floating_start");
+        var timeline = gsap.timeline();
+        timeline.to(button, {opacity: 0, duration: 1, onComplete: () => {button.remove()}});
+        
+        // show intro para
+        var explainer = document.querySelector(".explainer");
+        var text = document.querySelector(".para");
+        var next_button = document.querySelector(".next_button");
+        timeline.to(explainer, {opacity: 1, duration: 1, onComplete: () => {
+        }});
+
+        
+        // paras
+        var paras =[`Whenever you are feeling a strong emotion, or even just have an idea you want to note down,
+                    you can simply write down what you're thinking in the journal. It can feel good to make what you are feeling
+                    tangible and validated too!`,
+                    `Here, we have recommended some daily goals to strive for, to help you get a good start to the day! You can even
+                    set your own daily goals`,
+                    `Lastly, we have prepared a questionnaire. Don't worry, it is a simple flowchart, to help you out when you are feeling
+                    uncomfortable, or even overwhelmed, but do not know why. The questionairre will hopefully help identify what kind of self-love
+                    and care you need!`,
+                    `We hope you enjoy your stay here at TuGucci!`];
+
+        // gsaps to tween between paras
+        var journal_tween = gsap.to(text, {text: paras[0], duration: 3, delay: 1});
+        var journal_explainer = gsap.to(explainer, {width: "30vw", right: 300, zIndex: 100,  duration: 3, delay: 1});
+        journal_tween.pause();
+        journal_explainer.pause();
+
+        var goal_tween = gsap.to(text, {text: paras[1], duration: 1});
+        var goal_explainer = gsap.to(explainer, {width: "25vw", top: 10, left: 10, duration: 1});
+        goal_tween.pause();
+        goal_explainer.pause();
+
+
+        var quest_tween = gsap.to(text, {text: paras[2], duration: 1});
+        var quest_explainer = gsap.to(explainer, {width: "25vw", top: 10, left: 10, duration: 1});
+        quest_tween.pause();
+        quest_explainer.pause();
+
+        var outro_tween = gsap.to(text, {text: paras[3], duration: 1});
+        var outro_explainer = gsap.to(explainer, {width: "25vw", top: 10, left: 10, duration: 1});
+        outro_tween.pause();
+        outro_explainer.pause();
+
+        // tween array
+        var tweens_array = [[journal_tween, journal_explainer], [goal_tween, goal_explainer], [quest_tween, quest_explainer], [outro_tween, outro_explainer]];
+
+        // show next button
+        timeline.to(next_button, {opacity: 1, duration: 1, onComplete: ()=> {
+            next_button.addEventListener("click" ,() => {
+                console.log(i);
+                if (i > 0 && i < 3) {
+                    var prev_func = functions[i-1];
+                    prev_func();
+                    setTimeout(() => {
+                        console.log("detoggled");
+                        var to_run = functions[i];
+                        to_run();
+                        var tweens = tweens_array[i];
+                        tweens.forEach(tween => {
+                            tween.play();
+                        });
+                        i++;
+                    }, 1000);
+                } else if (i > 3) {
+                    const control_bar = document.querySelector(".control_bar");
+                    gsap.to(control_bar, {scale: 1, duration: 1});
+                    const nav_bar = document.querySelector(".nav_wrapper");
+                    gsap.to(nav_bar, {scale: 1, duration: 1});
+                    next_button.remove();
+                    text.remove();
+                    explainer.remove();
+                } else {
+                    var to_run = functions[i];
+                    to_run();
+                    var tweens = tweens_array[i];
+                    tweens.forEach(tween => {
+                        tween.play();
+                    });
+                    i++;
+                }
+            })
+        }});
+
+        function display_ui() {
+            
+        }
     }
 </script>
 
@@ -134,4 +255,23 @@
         @apply px-8 py-4 rounded-md shadow-lg cursor-pointer;
     }
 
+    p {
+        @apply text-3xl font-secondary text-secondary;
+        /* text-shadow: 0px 1px black; */
+    }
+
+    .text {
+        @apply rounded-xl p-10;
+        background: rgba(0,0,0, 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    .floating_start {
+        background: rgba(255, 255 ,255 , 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    .next_button {
+        @apply text-4xl text-white font-primary z-50 cursor-pointer;
+    }
 </style>

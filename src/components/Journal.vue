@@ -1,5 +1,5 @@
 <template>
-    <div class = "main_journal absolute w-[80vw] h-[80vh] flex items-center justify-center p-20 gap-24">
+    <div class = "main_journal absolute w-[85vw] h-[80vh] flex items-center justify-center p-20 gap-36">
         <ul class="flex flex-col flex-nowrap w-1/2 items-center h-[70vh] gap-2 overflow-x-hidden relative">
             <li v-for="entry in journal_entries" :key="entry">
                 {{entry.data}}
@@ -31,8 +31,9 @@
         onSnapshot(q, (query_snapshot) => {
             const data = [];
             query_snapshot.forEach((doc) => {
-                data.push({id: doc.id, data: doc.data().entry});
+                data.push({id: doc.id, data: doc.data().entry, sorting: doc.data().date.toDate().getTime()});
             });
+            data.sort((a, b) => a.sorting - b.sorting);
             journal_entries.value = data;
         });
         document.querySelector(".main_journal").style.opacity = props.journalToggle;
@@ -45,6 +46,8 @@
             console.log("empty");
             return;
         };
+        document.getElementById("new_entry").value = "";
+        create_popup();
         // run sentiment analysis immediately
         var sentiment_response = await axios.post(`https://textsentiment-3arqmo4jra-as.a.run.app/api`, {
             entry: value,
@@ -63,7 +66,16 @@
         } catch (e) {
             console.log(e);
         }
-        document.getElementById("new_entry").value = "";
+    }
+
+    function create_popup() {
+        var popup = document.createElement("div");
+        popup.classList.add("popup");
+        popup.innerHTML = "Entry added!";
+        document.body.appendChild(popup);
+        setTimeout(() => {
+            popup.remove();
+        }, 2000);
     }
     
 </script>
@@ -98,5 +110,9 @@
 
     #new_entry {
         @apply p-20 text-primary font-primary;
+    }
+
+    .popup {
+        @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-5xl font-secondary text-white z-40;
     }
 </style>

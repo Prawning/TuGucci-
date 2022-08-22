@@ -23,13 +23,14 @@
             query_snapshot.forEach((doc) => {
                 var date = doc.data().date.toDate();
                 // convert to yy-mm-dd-hh-mm-ss
-                var date_string = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "/" + date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds();
+                var date_string = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "/" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
                 date = date_string;
-                // date = String(date.getTime())
-                // date = date.slice(date.length - 7, date.length - 1); // get last 6
+                var for_sorting = doc.data().date.toDate().getTime();
                 var score = doc.data().score;
-                data.push({time_created: date, score: score});
+                data.push({time_created: date, score: score, for_sorting: for_sorting});
             });
+            // sort data by forsorting, biggest first
+            data.sort((a, b) => a.for_sorting - b.for_sorting);
             sentiments.value = data;
             redraw();
         });

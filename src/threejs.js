@@ -185,6 +185,7 @@ var prev_ach = canvas.dataset.ach;
 var prev_quest = canvas.dataset.quest;
 var prev_book = canvas.dataset.book;
 var prev_logged = canvas.dataset.logged;
+var prev_house = canvas.dataset.house;
 function animate_camera() {
     if (canvas.dataset.ach != prev_ach) {
         prev_ach = canvas.dataset.ach;
@@ -216,8 +217,14 @@ function animate_camera() {
 
     if (canvas.dataset.logged != prev_logged) {
         prev_logged = canvas.dataset.logged;
+        // camera_init();
+        // gsap.to(camera_target, {x: positions.init[3], y: positions.init[4], z: positions.init[5], duration: 1, delay: 1});
+        camera_fire();
+    }
+
+    if (canvas.dataset.house != prev_house) {
+        prev_house = canvas.dataset.house;
         camera_init();
-        gsap.to(camera_target, {x: positions.init[3], y: positions.init[4], z: positions.init[5], duration: 1, delay: 1});
     }
 }
 

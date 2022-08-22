@@ -1,45 +1,47 @@
 <template>
-    <div class="nav logo z-30" @click="animate_nav">
-        <img src="../assets/prawn.gif" alt="Logo">
-    </div>
-    <div class="navbar flex flex-col w-[15rem] h-screen fixed top-0 left-0 gap-10 z-20" v-show="vis_nav">
-        <div class="filler">
-
+    <div class="nav_wrapper">
+        <div class="nav logo z-30" @click="animate_nav">
+            <img src="../assets/prawn.gif" alt="Logo">
         </div>
+        <div class="navbar flex flex-col w-[15rem] h-screen fixed top-0 left-0 gap-10 z-20" v-show="vis_nav">
+            <div class="filler">
 
-        <div class="nav home" v-if="logged_in" @click="$router.push('/home')">
-            <div class="text">
-                Home
             </div>
-        </div>
 
-        <div class="account nav" v-if="logged_in">
-            <div class="text">
-                Account
+            <div class="nav home" v-if="logged_in" @click="$router.push('/home')">
+                <div class="text">
+                    Home
+                </div>
             </div>
-        </div>
 
-        <div class="about nav">
-            <div class="text">
-                About
+            <div class="account nav" v-if="logged_in">
+                <div class="text">
+                    Account
+                </div>
             </div>
-        </div>
 
-        <div class="faq nav">
-            <div class="text">
-                FAQ
+            <div class="about nav">
+                <div class="text">
+                    About
+                </div>
             </div>
-        </div>
 
-        <div class="sentiment nav" v-if="logged_in" @click="$router.push('/sentiment')">
-            <div class="text">
-                Sentiment
+            <div class="faq nav">
+                <div class="text">
+                    FAQ
+                </div>
             </div>
-        </div>
-        
-        <div class="logout nav absolute bottom-0" v-if="logged_in" @click="logout">
-            <div class="text">
-                Logout
+
+            <div class="sentiment nav" v-if="logged_in" @click="$router.push('/sentiment')">
+                <div class="text">
+                    Sentiment
+                </div>
+            </div>
+            
+            <div class="logout nav absolute bottom-0" v-if="logged_in" @click="logout">
+                <div class="text">
+                    Logout
+                </div>
             </div>
         </div>
     </div>
