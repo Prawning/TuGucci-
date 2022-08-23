@@ -23,13 +23,13 @@
             chart_toggle,
             add_music() {
                 const nav = document.querySelector(".navbar");
-                if (nav.lastChild.classList.contains("logout")) {
-                    var iframe = document.createElement("div");
-                    iframe.innerHTML= `<iframe width="100%" class="sound" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1329699604%3Fsecret_token%3Ds-4lhAPab5L8q&color=%2384848c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=falsee&visual=false"></iframe>`;
-                    nav.appendChild(iframe);
+                if (nav.lastElementChild.classList.contains("logout") || nav.lastElementChild.classList.contains("faq")) {
+                    setTimeout(() => {
+                        var iframe = document.createElement("div");
+                        iframe.innerHTML= `<iframe width="100%" class="sound" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1329699604%3Fsecret_token%3Ds-4lhAPab5L8q&color=%2384848c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=falsee&visual=false"></iframe>`;
+                        nav.appendChild(iframe);
+                    }, 5000)
                 }
-                iframe = document.querySelector(".sound");
-                console.log(SC.Widget(iframe));
                 window.removeEventListener("click", this.add_music);
             }
         },
@@ -42,8 +42,6 @@
                     isLoggedIn.value = false;
                 }
             });
-
-            console.log(document.querySelector(".navbar"));
 
             window.addEventListener("click", this.add_music);
         },

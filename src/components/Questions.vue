@@ -313,6 +313,6 @@
     }
 
     .options {
-        @apply border-b-2 border-white my-4 w-1/2;
+        @apply border-b-2 border-white my-4 w-1/2 cursor-pointer;
     }
 </style>

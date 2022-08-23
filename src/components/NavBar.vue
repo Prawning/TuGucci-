@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="tour nav" v-if="logged_in">
+            <div class="retour nav" v-if="logged_in">
                 <div class="text">
                     Tour
                 </div>

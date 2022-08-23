@@ -84,6 +84,7 @@
             toggle_init,
             toggle_house,
             start_tour,
+            restart_tour
         },
         mounted() {
             const title = document.querySelector(".title");
@@ -105,6 +106,7 @@
                     };
                 });
             });
+            document.querySelector(".retour").addEventListener("click", this.restart_tour);
             this.toggle_init();
         },
         components: {
@@ -208,7 +210,7 @@
 
     function start_tour() {
         var i = 0;
-        var functions = [this.toggle_journal, this.toggle_achievements, this.toggle_init, this.toggle_house];
+        var functions = [this.toggle_journal, this.toggle_achievements, this.toggle_questions, this.toggle_house];
         // remove button
         var button = document.querySelector(".floating_start");
         var timeline = gsap.timeline();
@@ -234,24 +236,24 @@
                     `We hope you enjoy your stay here at TuGucci!`];
 
         // gsaps to tween between paras
-        var journal_tween = gsap.to(text, {text: paras[0], duration: 3, delay: 1});
+        var journal_tween = gsap.to(text, {text : {value: paras[0], delimiter:" ", padSpace:true}, duration: 3, delay: 1});
         var journal_explainer = gsap.to(explainer, {width: "30vw", right: 400, zIndex: 100,  duration: 1, delay: 1});
         journal_tween.pause();
         journal_explainer.pause();
 
-        var goal_tween = gsap.to(text, {text: paras[1], duration: 1});
-        var goal_explainer = gsap.to(explainer, {width: "25vw", top: "50%", left: 10, duration: 1});
+        var goal_tween = gsap.to(text, {text : {value: paras[1], delimiter:" ", padSpace:true}, duration: 1});
+        var goal_explainer = gsap.to(explainer, {width: "20vw", top: "50%", left: 10, duration: 1});
         goal_tween.pause();
         goal_explainer.pause();
 
 
-        var quest_tween = gsap.to(text, {text: paras[2], duration: 1});
+        var quest_tween = gsap.to(text, {text : {value: paras[2], delimiter: " ", padSpace:true}, duration: 1});
         var quest_explainer = gsap.to(explainer, {width: "50vw", xPercent: -50, yPercent: -50, top:"50%", left:"50%", duration: 1});
         quest_tween.pause();
         quest_explainer.pause();
 
-        var outro_tween = gsap.to(text, {text: paras[3], duration: 3});
-        var outro_explainer = gsap.to(explainer, {width: "25vw", duration: 1});
+        var outro_tween = gsap.to(text, {text : {value: paras[3], delimiter: " ", padSpace:true}, duration: 3});
+        var outro_explainer = gsap.to(explainer, {width: "25vw", bottom: 100, duration: 1});
         outro_tween.pause();
         outro_explainer.pause();
 
@@ -261,19 +263,26 @@
         // show next button
         timeline.to(next_button, {opacity: 1, duration: 1, onComplete: ()=> {
             next_button.addEventListener("click" , async () => {
-                if (i > 0 && i < 3) {
-                    var prev_func = functions[i-1];
-                    prev_func();
+                var prev_func = null;
+
+                if (i < tweens_array.length) {
+                    try {
+                        prev_func = functions[i-1];
+                        prev_func();
+                    } catch (e) {
+                        console.log("first time");
+                    }
+
                     setTimeout(() => {
-                        var to_run = functions[i];
-                        to_run();
+                        var curr_func = functions[i];
+                        curr_func();
                         var tweens = tweens_array[i];
                         tweens.forEach(tween => {
                             tween.play();
                         });
                         i++;
                     }, 1000);
-                } else if (i > 3) {
+                } else if (i > tweens_array.length - 1) {
                     const control_bar = document.querySelector(".control_bar");
                     gsap.to(control_bar, {scale: 1, duration: 1});
                     const nav_bar = document.querySelector(".nav_wrapper");
@@ -285,7 +294,6 @@
                     snapshot.forEach((doc) => {
                         updateDoc(doc.ref, {
                             toured: true,
-                            page: 3
                         });
                     });
 
@@ -304,6 +312,13 @@
                 }
             })
         }});
+    }
+
+    function restart_tour() {
+        this.toured = false;
+        document.querySelector(".control_bar").style.scale = 0;
+        document.querySelector(".nav_wrapper").style.scale = 0;
+        this.start_tour();
     }
 </script>
 
