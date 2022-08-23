@@ -112,7 +112,7 @@
 
     onMounted(() => {
         load_sentiment_firestore();
-        gsap.to(".main_chart", {opacity: props.chartToggle, duration: 1});
+        gsap.to(".main_chart", {opacity: props.chartToggle, scale: props.chartToggle, duration: 1});
     })
 </script>
 
@@ -121,7 +121,7 @@
     export default {
         watch: {
             chartToggle: function () {
-                gsap.to(".main_chart", {opacity: this.chartToggle, duration: this.chartToggle});
+                gsap.to(".main_chart", {opacity: this.chartToggle, scale: this.chartToggle, duration: 1.4 * this.chartToggle});
             }
         }
     }

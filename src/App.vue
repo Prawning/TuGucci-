@@ -1,5 +1,5 @@
 <template>
-    <NavBar />
+    <NavBar @init=init_toggle id = "nav-comp" data-music-0 />
     <router-view class="w-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle @init=init_toggle @house=house_toggle @chart=chart_toggle />
     <canvas class="webgl" data-logged=0 data-ach=1 data-quest=1 data-book=1 data-house=1 data-chart=1></canvas>
 </template>
@@ -20,7 +20,18 @@
             book_toggle,
             init_toggle,
             house_toggle,
-            chart_toggle
+            chart_toggle,
+            add_music() {
+                const nav = document.querySelector(".navbar");
+                if (nav.lastChild.classList.contains("logout")) {
+                    var iframe = document.createElement("div");
+                    iframe.innerHTML= `<iframe width="100%" class="sound" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1329699604%3Fsecret_token%3Ds-4lhAPab5L8q&color=%2384848c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=falsee&visual=false"></iframe>`;
+                    nav.appendChild(iframe);
+                }
+                iframe = document.querySelector(".sound");
+                console.log(SC.Widget(iframe));
+                window.removeEventListener("click", this.add_music);
+            }
         },
         mounted() {
             auth = getAuth();
@@ -31,6 +42,10 @@
                     isLoggedIn.value = false;
                 }
             });
+
+            console.log(document.querySelector(".navbar"));
+
+            window.addEventListener("click", this.add_music);
         },
         data() {
             return {
@@ -38,6 +53,7 @@
             }
         }
     }
+
 
     function achievement_toggle() {
         const canvas = document.querySelector(".webgl");

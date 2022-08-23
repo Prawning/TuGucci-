@@ -287,7 +287,6 @@
                 this.page = doc.data().page; // loads the current page of the user
                 this.lastKnown = doc.data().page
             });
-            console.log(this.questToggle);
             document.querySelector(".main_quest").style.opacity = this.questToggle;
 
             // todo check if new day and reset quiz

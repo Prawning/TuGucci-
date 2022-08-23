@@ -24,13 +24,18 @@
         </div>
 
         <div class="control_bar fixed bottom-10 side_bar w-screen flex justify-evenly gap-10 text-5xl font-primary text-secondary" style="transform: scale(1)">
+            <div class="cta book" @click=toggle_journal style="visibility:visible">
+                Journal
+            </div>
+
+            <div class="cta chart" @click=toggle_chart style="visibility:visible">
+                Sentiment
+            </div>
+
             <div class="cta goal" @click=toggle_achievements style="visibility:visible">
                 View Today's Goals
             </div>
 
-            <div class="cta book" @click=toggle_journal style="visibility:visible">
-                Journal
-            </div>
 
             <div class="cta quest" @click=toggle_questions style="visibility:visible">
                 Questions
@@ -101,7 +106,6 @@
                 });
             });
             this.toggle_init();
-            document.querySelector("#sentiment_button").addEventListener("click", this.toggle_chart);
         },
         components: {
             DailyGoals,
@@ -119,9 +123,10 @@
         1 - achievements ? visibility = "visible" : visibility = "hidden";
         gsap.to(".book", {opacity: 1-achievements, duration: 0.1});
         gsap.to(".quest", {opacity: 1-achievements, duration: 0.1});
-        gsap.to("#sentiment_button", {opacity: 1-questions, duration: 1});
+        gsap.to(".chart", {opacity: 1-achievements, duration: 0.1});
         gsap.to(".book", {visibility: visibility, delay: 0.1, duration: 0.1});
         gsap.to(".quest", {visibility: visibility, delay: 0.1, duration: 0.1});
+        gsap.to(".chart", {visibility: visibility, delay: 0.1, duration: 0.1});
         this.$emit("achievements");
         this.goal_toggle = 1 - this.goal_toggle;
         setTimeout(() => {
@@ -135,10 +140,11 @@
         journal = 1 - journal;
         gsap.to(".goal", {opacity: 1-journal, duration: 1}); // buttons fade out
         gsap.to(".quest", {opacity: 1-journal, duration: 1});
-        gsap.to("#sentiment_button", {opacity: 1-questions, duration: 1});
+        gsap.to(".chart", {opacity: 1-journal, duration: 1});
         1 - journal ? visibility = "visible" : visibility = "hidden";
         gsap.to(".goal", {visibility: visibility, delay: 0.1, duration: 0.1}); // prevent from clicking the buttons
         gsap.to(".quest", {visibility: visibility, delay: 0.1, duration: 0.1});
+        gsap.to(".chart", {visibility: visibility, delay: 0.1, duration: 0.1});
         try {
             this.$emit("book"); // sends out event so threejs can be updated
             this.journal_toggle = 1 - this.journal_toggle; // toggles journal
@@ -156,11 +162,12 @@
         questions = 1 - questions;
         gsap.to(".goal", {opacity: 1-questions, duration: 1}); // disallow jumping to the other two
         gsap.to(".book", {opacity: 1-questions, duration: 1});
-        gsap.to("#sentiment_button", {opacity: 1-questions, duration: 1});
-        gsap.to(".questions", {opacity: questions, duration: 0.5});
+        gsap.to(".chart", {opacity: 1-questions, duration: 1});
+        // gsap.to(".questions", {opacity: questions, duration: 0.5});
         1 - questions ? visibility = "visible" : visibility = "hidden";
         gsap.to(".goal", {visibility: visibility, delay: 0.1, duration: 0.1});
         gsap.to(".book", {visibility: visibility, delay: 0.1, duration: 0.1});
+        gsap.to(".chart", {visibility: visibility, delay: 0.1, duration: 0.1});
         this.$emit("quest");
         this.quest_toggle = 1 - this.quest_toggle;
         setTimeout(() => {
@@ -169,12 +176,21 @@
     }
 
     function toggle_chart() {
-        // untoggle other components
-        var main_bar = document.querySelector(".control_bar");
+        var button = document.querySelector(".chart");
+        button.style.pointerEvents = "none";
         chart = 1 - chart;
-        gsap.to(".control_bar", {scale: 1-chart, duration: 0.5}); // prevent from clicking the buttons
+        gsap.to(".goal", {opacity: 1-chart, duration: 1});
+        gsap.to(".book", {opacity: 1-chart, duration: 1});
+        gsap.to(".quest", {opacity: 1-chart, duration: 1});
+        1 - chart ? visibility = "visible" : visibility = "hidden";
+        gsap.to(".goal", {visibility: visibility, delay: 0.1, duration: 0.1});
+        gsap.to(".book", {visibility: visibility, delay: 0.1, duration: 0.1});
+        gsap.to(".quest", {visibility: visibility, delay: 0.1, duration: 0.1});
         this.$emit("chart");
         this.chart_toggle = 1 - this.chart_toggle;
+        setTimeout(() => {
+            button.style.pointerEvents = "auto";
+        }, 3000);
 
     }
 
@@ -266,9 +282,7 @@
                     var uuid = auth.currentUser.uid;
                     var q = query(collection(db, "users"), where("user_uid", "==", uuid));
                     var snapshot = await getDocs(q);
-                    console.log("HERE")
                     snapshot.forEach((doc) => {
-                        console.log(doc.data())
                         updateDoc(doc.ref, {
                             toured: true,
                             page: 3

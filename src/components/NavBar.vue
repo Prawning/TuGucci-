@@ -8,7 +8,7 @@
 
             </div>
 
-            <div class="nav home" v-if="logged_in" @click="$router.push('/home')">
+            <div class="nav home" v-if="logged_in" @click="go_home">
                 <div class="text">
                     Home
                 </div>
@@ -32,9 +32,9 @@
                 </div>
             </div>
 
-            <div id="sentiment_button" class="sentiment nav" v-if="logged_in">
+            <div class="tour nav" v-if="logged_in">
                 <div class="text">
-                    Sentiment
+                    Tour
                 </div>
             </div>
             
@@ -91,6 +91,17 @@
     })
 </script>
 
+<script>
+    export default {
+        methods: {
+            go_home() {
+                this.$router.push('/home');
+                this.$emit("init");
+            }
+        }
+    }
+</script>
+
 <style>
     .nav {
         @apply text-4xl text-secondary font-primary cursor-pointer p-4 w-full;
@@ -125,5 +136,10 @@
 
     .filler {
         @apply h-[14rem];
+    }
+
+    .sound {
+        filter: grayscale(80%);
+        @apply p-10;
     }
 </style>
