@@ -1,12 +1,12 @@
 <template>
     <div class="main_quest w-[70vw] h-[70vh] flex flex-col items-center justify-center" style="opacity:0">
         <div class="flex flex-col w-[70vw] questions py-40 px-10 rounded-3xl shadow-lg">
-            <div class="actual_question text-8xl font-primary text-secondary">
-                {{questions[1].question}}
+            <div class="actual_question text-6xl font-primary text-secondary">
+                {{questions[lastKnown].question}}
             </div>
 
             <div class="description text-3xl font-secondary text-quinary mt-20">
-                {{questions[1].description}}
+                {{questions[lastKnown].description}}
             </div>
 
             <div class="w-full h-full flex flex-col gap-3 mt-20">
@@ -46,6 +46,7 @@
         data() {
             return {
                 page: 1,
+                lastKnown: 1,
                 option: 0,
                 questions: {1: {question: "Have you eaten in the last four hours?", 
                          answers : ["Yes! Next question", "I could use a snack...", "No, I need a meal"], 
@@ -208,19 +209,19 @@
                          answers: ["Okay, I cleaned up a little!"],
                          redirects: [204]},
                     302:{question: "Here are some ideas for grounding activities:",
-                         description: `-Take deep, calm breaths.
-                                        -Notice and list things in your surroundings.
-                                        -Expose yourself to strong, pleasant sensations, like a pleasing smell or a favorite blanket.
-                                        -Say out loud your name, your age, the date, and your location. List some things you've done today, or are going to do.
-                                        -Splash water on your face or run your hands under the faucet.
-                                        -Do a body scan meditation, or pay close attention to each of your body parts one by one.
-                                        -Make tea. Feel the warmth of it in your hands, and the taste as you sip it calmly.
-                                        -Listen to music.
-                                        -Play a categories game, and name some types of dogs, or clothing items, or gemstones, or countries, or anything else you can think of.
-                                        -Write in your journal.
-                                        -Take a mindful walk, either inside or outside. Pay close attention to your body and your surroundings.
-                                        -Squiggle. Wiggle around. Dance. Stretch. Be silly and active for a few minutes.
-                                        -Any other favorite grounding technique you've heard of or can think of. There's nothing wrong with experimenting!`,
+                         description: "-Take deep, calm breaths.\
+                                        \n-Notice and list things in your surroundings.\
+                                        \n-Expose yourself to strong, pleasant sensations, like a pleasing smell or a favorite blanket.\
+                                        \n-Say out loud your name, your age, the date, and your location. List some things you've done today, or are going to do.\
+                                        \n-Splash water on your face or run your hands under the faucet.\
+                                        \n-Do a body scan meditation, or pay close attention to each of your body parts one by one.\
+                                        \n-Make tea. Feel the warmth of it in your hands, and the taste as you sip it calmly.\
+                                        \n-Listen to music.\
+                                        \n-Play a categories game, and name some types of dogs, or clothing items, or gemstones, or countries, or anything else you can think of.\
+                                        \n-Write in your journal.\
+                                        \n-Take a mindful walk, either inside or outside. Pay close attention to your body and your surroundings.\
+                                        \n-Squiggle. Wiggle around. Dance. Stretch. Be silly and active for a few minutes.\
+                                        \n-Any other favorite grounding technique you've heard of or can think of. There's nothing wrong with experimenting!",
                          answers: ["Okay! I did one or more of these things, and I'm ready to move on"],
                          redirects: [8]},
                     303:{question: "Walks are really good for both our bodies and our minds. Take a walk of whatever length you choose! You're not trying to burn calories or get to a particular destination; you're just taking a pleasant stroll. Enjoy it!",
@@ -259,8 +260,8 @@
                     const description = document.querySelector(".description");
                     var question_text = this.questions[this.page].question;
                     var description_text = this.questions[this.page].description || "";
-                    gsap.to(actual_question, {text: question_text, duration: 0.5});
-                    gsap.to(description, {text: description_text, duration: 0.5});
+                    gsap.to(actual_question, {text: {value: question_text, delimiter: " ", padSpace: true, speed: 2}});
+                    gsap.to(description, {text: {value: description_text,delimiter: " ", padSpace: true, speed: 3}, delay: 0.5});
                 },
             async reset_page() {
                 this.page = 1;
@@ -274,8 +275,8 @@
                 const description = document.querySelector(".description");
                 var question_text = this.questions[1].question;
                 var description_text = "";
-                gsap.to(actual_question, {text: question_text, duration: 0.5});
-                gsap.to(description, {text: description_text, duration: 0.5});
+                gsap.to(actual_question, {text: {value: question_text, delimiter: " ", padSpace: true}, duration: 1, ease: "power2.out"});
+                gsap.to(description, {text: {value: description_text,delimiter: " ", padSpace: true}, duration: 1, delay: 0.5});
             }
         }, async mounted() {
             var uuid = auth.currentUser.uid;
@@ -284,6 +285,7 @@
             var snapshot = await getDocs(q);
             snapshot.forEach((doc) => {
                 this.page = doc.data().page; // loads the current page of the user
+                this.lastKnown = doc.data().page
             });
             console.log(this.questToggle);
             document.querySelector(".main_quest").style.opacity = this.questToggle;
@@ -307,7 +309,11 @@
     }
 
     .questions {
-        background: rgba(255, 255, 255, 0.01);
+        background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(50px);
+    }
+
+    .options {
+        @apply border-b-2 border-white my-4 w-1/2;
     }
 </style>
