@@ -4,6 +4,9 @@ import Home from '../views/Home.vue';
 import Landing from '../views/Landing.vue';
 import Register from '../views/Register.vue';
 import Login from '../views/Login.vue';
+import Account from '../views/Account.vue';
+import About from '../views/About.vue';
+import FAQ from '../views/FAQ.vue';
 
 const routes = [{
         path: "/",
@@ -32,6 +35,18 @@ const routes = [{
         path: "/login",
         name: "Login",
         component: Login
+    }, {
+        path: "/account",
+        name: "Account",
+        component: Account,
+    }, {
+        path: "/about",
+        name: "About",
+        component: About
+    }, {
+        path: "/faq",
+        name: "FAQ",
+        component: FAQ
     }
 ];
 

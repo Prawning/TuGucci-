@@ -14,19 +14,19 @@
                 </div>
             </div>
 
-            <div class="account nav" v-if="logged_in">
+            <div class="account nav" v-if="logged_in" @click="$router.push('/account')">
                 <div class="text">
                     Account
                 </div>
             </div>
 
-            <div class="about nav">
+            <div class="about nav" @click="$router.push('/about')">
                 <div class="text">
                     About
                 </div>
             </div>
 
-            <div class="faq nav">
+            <div class="faq nav" @click="$router.push('/faq')">
                 <div class="text">
                     FAQ
                 </div>
@@ -95,8 +95,8 @@
     export default {
         methods: {
             go_home() {
-                this.$router.push('/home');
                 this.$emit("init");
+                window.location.href = "/";
             }
         }
     }

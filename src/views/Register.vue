@@ -116,6 +116,7 @@
                 page: 0,
                 toured: false,
                 profile_picture: "",
+                joined: new Date(),
             });
             create_journal(user_uid);
             create_goals(user_uid);

@@ -1,5 +1,5 @@
 <template>
-    <div class=" fixed main_chart w-[70vw] h-[70vh] text-5xl flex flex-col gap-10 items-center justify-center" style="opacity: 0">
+    <div class=" absolute main_chart w-[70vw] h-[70vh] text-5xl flex flex-col gap-10 items-center justify-center" style="opacity: 0">
         <div class="chart_container">
             <canvas id ="chartjs">
             </canvas>
@@ -11,6 +11,7 @@
     import {db, auth} from '../main.js';
     import {ref, onMounted} from 'vue';
     import {collection, addDoc, query, where, onSnapshot, doc} from "firebase/firestore";
+    import {useRouter} from 'vue-router';
     import Chart from 'chart.js/auto';
     const props = defineProps({
         chartToggle: {
@@ -18,7 +19,11 @@
         }
     });
 
-    const uuid = auth.currentUser.uid;
+
+    if (auth.currentUser == null) {
+        window.location.href = "/";
+    }
+    // const uuid = auth.currentUser.uid;
     const sentiments = ref([]);
 
     function load_sentiment_firestore() {
