@@ -2,11 +2,11 @@
     <div class="main_quest w-[70vw] h-[70vh] flex flex-col items-center justify-center" style="opacity:0">
         <div class="flex flex-col w-[70vw] questions py-40 px-10 rounded-3xl shadow-lg">
             <div class="actual_question text-6xl font-primary text-secondary">
-                {{questions[lastKnown].question}}
+                {{questions[page].question}}
             </div>
 
             <div class="description text-3xl font-secondary text-quinary mt-20">
-                {{questions[lastKnown].description}}
+                {{questions[page].description}}
             </div>
 
             <div class="w-full h-full flex flex-col gap-3 mt-20">
@@ -256,12 +256,12 @@
                     });
 
                     // gsap magic
-                    const actual_question = document.querySelector(".actual_question");
-                    const description = document.querySelector(".description");
-                    var question_text = this.questions[this.page].question;
-                    var description_text = this.questions[this.page].description || "";
-                    gsap.to(actual_question, {text: {value: question_text, delimiter: " ", padSpace: true, speed: 2}});
-                    gsap.to(description, {text: {value: description_text,delimiter: " ", padSpace: true, speed: 3}, delay: 0.5});
+                    // const actual_question = document.querySelector(".actual_question");
+                    // const description = document.querySelector(".description");
+                    // var question_text = this.questions[this.page].question;
+                    // var description_text = this.questions[this.page].description || "";
+                    // gsap.to(actual_question, {text: {value: question_text, delimiter: " ", padSpace: true, speed: 2}});
+                    // gsap.to(description, {text: {value: description_text,delimiter: " ", padSpace: true, speed: 3}, delay: 0.5});
                 },
             async reset_page() {
                 this.page = 1;
@@ -271,12 +271,12 @@
                 snapshot.forEach((doc) => {
                     updateDoc(doc.ref, {page: this.page});
                 });
-                const actual_question = document.querySelector(".actual_question");
-                const description = document.querySelector(".description");
-                var question_text = this.questions[1].question;
-                var description_text = "";
-                gsap.to(actual_question, {text: {value: question_text, delimiter: " ", padSpace: true}, duration: 1, ease: "power2.out"});
-                gsap.to(description, {text: {value: description_text,delimiter: " ", padSpace: true}, duration: 1, delay: 0.5});
+                // const actual_question = document.querySelector(".actual_question");
+                // const description = document.querySelector(".description");
+                // var question_text = this.questions[1].question;
+                // var description_text = "";
+                // gsap.to(actual_question, {text: {value: question_text, delimiter: " ", padSpace: true}, duration: 1, ease: "power2.out"});
+                // gsap.to(description, {text: {value: description_text,delimiter: " ", padSpace: true}, duration: 1, delay: 0.5});
             }
         }, async mounted() {
             var uuid = auth.currentUser.uid;

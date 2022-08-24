@@ -15,7 +15,7 @@
     import Chart from 'chart.js/auto';
     const props = defineProps({
         chartToggle: {
-            required: true,
+            default: 1
         }
     });
 

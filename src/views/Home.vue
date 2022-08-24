@@ -1,10 +1,10 @@
 <template>
     <div class="main flex flex-col items-center justify-center w-screen h-screen gap-10">
-        <h1 class="fixed top-10 text-[10rem] text-secondary font-primary title" v-bind:id="user">
+        <h1 v-show=toured class="fixed top-10 text-[8rem] text-secondary font-primary title" v-bind:id="user">
             Everything will be gucci, {{user}}!
         </h1>
 
-        <div v-show=!toured class="floating_start text-[11rem] w-[30vw] h-[15vh] flex items-center justify-center rounded-xl text-primary text-center font-primary shadow-2xl z-10 cursor-pointer" @click=start_tour>
+        <div v-show=!toured class="floating_start text-[9rem] w-[30vw] h-[15vh] flex items-center justify-center rounded-xl text-primary text-center font-primary shadow-2xl z-10 cursor-pointer" @click=start_tour>
             Get Started
         </div>
 
@@ -23,7 +23,7 @@
 
         </div>
 
-        <div class="control_bar fixed bottom-10 side_bar w-screen flex justify-evenly gap-10 text-5xl font-primary text-secondary" style="transform: scale(1)">
+        <div v-show=toured class="control_bar fixed bottom-10 side_bar w-screen flex justify-evenly gap-10 text-4xl font-primary text-secondary" style="transform: scale(1)">
             <div class="cta book" @click=toggle_journal style="visibility:visible">
                 Journal
             </div>
@@ -46,9 +46,9 @@
 
         <Journal id="daily_journal" :journal-toggle = journal_toggle />
 
-        <Questions :quest-toggle = quest_toggle />
+        <Questions id="main_quest" :quest-toggle = quest_toggle />
 
-        <Sentiment :chart-toggle = chart_toggle />
+        <Sentiment id="main_sent" :chart-toggle = chart_toggle />
     </div>
 </template>
 
@@ -84,7 +84,8 @@
             toggle_init,
             toggle_house,
             start_tour,
-            restart_tour
+            restart_tour,
+            reset_ui
         },
         mounted() {
             const title = document.querySelector(".title");
@@ -107,6 +108,7 @@
                 });
             });
             document.querySelector(".retour").addEventListener("click", this.restart_tour);
+            document.querySelector(".home").addEventListener("click", this.reset_ui);
             this.toggle_init();
         },
         components: {
@@ -114,14 +116,61 @@
             Journal,
             Questions,
             Sentiment,
-        },
+        }
     }
 
     var visibility = "hidden";
+
+    function reset_ui() {
+        // set all toggles to 0
+        achievements = 0;
+        journal = 0;
+        questions = 0;
+        chart = 0;
+        this.journal_toggle = 0;
+        this.goal_toggle = 0;
+        this.quest_toggle = 0;
+        this.chart_toggle = 0;
+
+        // set all cta's to visible
+        document.querySelector(".book").style.visibility = "visible";
+        document.querySelector(".chart").style.visibility = "visible";
+        document.querySelector(".goal").style.visibility = "visible";
+        document.querySelector(".quest").style.visibility = "visible";
+
+        // set all cta's to opacity 1
+        document.querySelector(".book").style.opacity = 1;
+        document.querySelector(".chart").style.opacity = 1;
+        document.querySelector(".goal").style.opacity = 1;
+        document.querySelector(".quest").style.opacity = 1;
+
+        // allow all cta's to be clicked
+        document.querySelector(".book").style.pointerEvents = "auto";
+        document.querySelector(".chart").style.pointerEvents = "auto";
+        document.querySelector(".goal").style.pointerEvents = "auto";
+        document.querySelector(".quest").style.pointerEvents = "auto";
+
+        // emit so threejs resets too
+        this.$emit("reset");
+
+        // go back to default view
+        setTimeout(() => {
+            this.toggle_init();
+        }, 1000);
+    }
+
     function toggle_achievements() {
+        const el = document.querySelector(".goal_board");
         var button = document.querySelector(".goal");
         button.style.pointerEvents = "none";
         achievements = 1 - achievements;
+        if (achievements) {
+            el.style.pointerEvents = "auto";
+            el.style.zIndex = 25;
+        } else {
+            el.style.pointerEvents = "none";
+            el.style.zIndex = -1;
+        }
         1 - achievements ? visibility = "visible" : visibility = "hidden";
         gsap.to(".book", {opacity: 1-achievements, duration: 0.1});
         gsap.to(".quest", {opacity: 1-achievements, duration: 0.1});
@@ -137,9 +186,17 @@
     }
 
     function toggle_journal() {
+        const el = document.querySelector("#daily_journal");
         var button = document.querySelector(".book");
         button.style.pointerEvents = "none"; // prevent spam clicking
         journal = 1 - journal;
+        if (journal) {
+            el.style.pointerEvents = "auto";
+            el.style.zIndex = 25;
+        } else {
+            el.style.pointerEvents = "none";
+            el.style.zIndex = -1;
+        }
         gsap.to(".goal", {opacity: 1-journal, duration: 1}); // buttons fade out
         gsap.to(".quest", {opacity: 1-journal, duration: 1});
         gsap.to(".chart", {opacity: 1-journal, duration: 1});
@@ -160,8 +217,17 @@
 
     function toggle_questions() {
         var button = document.querySelector(".quest");
+        const el = document.querySelector("#main_quest");
+
         button.style.pointerEvents = "none";
         questions = 1 - questions;
+        if (questions) {
+            el.style.pointerEvents = "auto";
+            el.style.zIndex = 25;
+        } else {
+            el.style.pointerEvents = "none";
+            el.style.zIndex = -1;
+        }
         gsap.to(".goal", {opacity: 1-questions, duration: 1}); // disallow jumping to the other two
         gsap.to(".book", {opacity: 1-questions, duration: 1});
         gsap.to(".chart", {opacity: 1-questions, duration: 1});
@@ -181,6 +247,15 @@
         var button = document.querySelector(".chart");
         button.style.pointerEvents = "none";
         chart = 1 - chart;
+        const el = document.querySelector("#main_sent");
+        if (chart) {
+            el.style.pointerEvents = "auto";
+            el.style.zIndex = 25;
+        } else {
+            const el = document.querySelector("#main_sent");
+            el.style.pointerEvents = "none";
+            el.style.zIndex = -1;
+        }
         gsap.to(".goal", {opacity: 1-chart, duration: 1});
         gsap.to(".book", {opacity: 1-chart, duration: 1});
         gsap.to(".quest", {opacity: 1-chart, duration: 1});
@@ -197,6 +272,10 @@
     }
 
     function toggle_init() {
+        document.querySelector(".goal_board").style.pointerEvents = "none";
+        document.querySelector("#daily_journal").style.pointerEvents = "none";
+        document.querySelector("#main_quest").style.pointerEvents = "none";
+        document.querySelector("#main_sent").style.pointerEvents = "none";
         this.$emit("init");
     }
 
@@ -209,7 +288,6 @@
     }
 
     function start_tour() {
-        var i = 0;
         var functions = [this.toggle_journal, this.toggle_achievements, this.toggle_questions, this.toggle_house];
         // remove button
         var button = document.querySelector(".floating_start");
@@ -262,9 +340,10 @@
 
         // show next button
         timeline.to(next_button, {opacity: 1, duration: 1, onComplete: ()=> {
+            var i = 0;
             next_button.addEventListener("click" , async () => {
                 var prev_func = null;
-
+                next_button.style.pointerEvents = "none";
                 if (i < tweens_array.length) {
                     try {
                         prev_func = functions[i-1];
@@ -281,6 +360,9 @@
                             tween.play();
                         });
                         i++;
+                    }, 1000);
+                    setTimeout(() => {
+                        next_button.style.pointerEvents = "auto";
                     }, 1000);
                 } else if (i > tweens_array.length - 1) {
                     const control_bar = document.querySelector(".control_bar");
@@ -316,6 +398,7 @@
 
     function restart_tour() {
         this.toured = false;
+        this.reset_ui();
         document.querySelector(".control_bar").style.scale = 0;
         document.querySelector(".nav_wrapper").style.scale = 0;
         this.start_tour();
@@ -331,7 +414,7 @@
     .cta {
         background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(10px);
-        text-shadow: 1px 0px white;
+        /* text-shadow: 1px 0px white; */
         @apply px-8 py-4 rounded-md shadow-lg cursor-pointer;
     }
 
@@ -353,5 +436,9 @@
 
     .next_button {
         @apply text-4xl text-white font-primary z-50 cursor-pointer;
+    }
+
+    .explainer {
+        @apply font-secondary;
     }
 </style>

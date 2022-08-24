@@ -52,8 +52,14 @@ function camera_fire() {
 };
 
 function camera_book() {
-    gsap.to(camera.position, { x: positions.book[0], y: positions.book[1], z: positions.book[2], duration: 1, delay: 1, ease: "power4.inOut"});
-    gsap.to(camera_target, { x: positions.book[3], y: positions.book[4], z: positions.book[5], duration: 1, delay: 1.5, ease: "power4.inOut"});
+    var delay = 1;
+    if (camera.position.x != positions.fire[0]) {
+        gsap.to(camera.position, { x: positions.fire[0], y: positions.fire[1], z: positions.fire[2], duration: 1, ease: "power4.inOut"});
+        gsap.to(camera_target, { x: positions.fire[3], y: positions.fire[4], z: positions.fire[5], duration: 1, delay: 0.5, ease: "power4.inOut"});
+        delay = 0.5;
+    }
+    gsap.to(camera.position, { x: positions.book[0], y: positions.book[1], z: positions.book[2], duration: 1, delay: delay-0.5, ease: "power4.inOut"});
+    gsap.to(camera_target, { x: positions.book[3], y: positions.book[4], z: positions.book[5], duration: 1, delay: delay, ease: "power4.inOut"});
 };
 
 function camera_title() {
@@ -209,7 +215,6 @@ function animate_camera() {
     if (canvas.dataset.book != prev_book) {
         prev_book = canvas.dataset.book;
         if (prev_book == 0) {
-            camera_fire();
             camera_book();
         } else {
             camera_init();

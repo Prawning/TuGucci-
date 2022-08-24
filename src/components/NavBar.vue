@@ -95,8 +95,10 @@
     export default {
         methods: {
             go_home() {
-                this.$emit("init");
-                window.location.href = "/";
+                this.$router.push("/");
+                setTimeout(() => {
+                    this.$emit("init");
+                }, 100);
             }
         }
     }

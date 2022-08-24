@@ -67,7 +67,10 @@
                 const user = userCredential.user;
                 var username = email.value.substring(0, email.value.indexOf("@"));
                 create_user(user.uid, email.value, username);
-                router.push({name: "Home"});
+                // todo add popup
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 5000);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -95,7 +98,9 @@
         signInWithPopup(getAuth(), provider)
             .then(async (result) => {
                 create_user(result.user.uid, result.user.email, result.user.displayName);
-                router.push("/home");
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 5000);      
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -113,10 +118,10 @@
                 email: email,
                 username: username,
                 score: 100,
-                page: 0,
+                page: 1,
                 toured: false,
                 profile_picture: "",
-                joined: new Date(),
+                joined: new Date().getDate(),
             });
             create_journal(user_uid);
             create_goals(user_uid);
