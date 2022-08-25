@@ -8,7 +8,7 @@
 
             </div>
 
-            <div class="nav home" v-if="logged_in" @click="go_home">
+            <div class="nav home" @click="go_home">
                 <div class="text">
                     Home
                 </div>
@@ -80,13 +80,13 @@
         const logo = document.querySelector(".logo");
         vis_nav.value = 1 - vis_nav.value;
         gsap.to(nav, {scaleX: vis_nav.value, duration: 0.1});
-        gsap.to(logo, {filter: vis_nav.value ? "grayscale(0)" : "grayscale(80%)", duration: 0.1});
+        gsap.to(logo, {filter: vis_nav.value ? "grayscale(0)" : "grayscale(80%)", rotation: 360, duration: 0.1});
     }
 
     window.addEventListener("click", (e) => {
         if (e.target.closest(".navbar") === null && e.target.closest(".logo") === null) {
             vis_nav.value = 0;
-            gsap.to(document.querySelector(".logo"), {filter: vis_nav.value ? "grayscale(0)" : "grayscale(80%)", duration: 0.1});
+            gsap.to(document.querySelector(".logo"), {filter: vis_nav.value ? "grayscale(0)" : "grayscale(80%)", rotation: 0, duration: 0.1});
         }
     })
 </script>
@@ -104,7 +104,7 @@
     }
 </script>
 
-<style>
+<style >
     .nav {
         @apply text-4xl text-secondary font-primary cursor-pointer p-4 w-full;
     }
@@ -123,7 +123,7 @@
     }
 
     .logo {
-        @apply rounded-full w-[10rem] h-[10rem] fixed top-[2.5rem] left-0 ml-10 shadow-lg p-0;
+        @apply rounded-full lg:w-[10rem] lg:h-[10rem] fixed lg:top-[2.5rem] lg:left-0 lg:ml-10 shadow-lg p-0 w-24 h-24 right-0;
         filter: grayscale(80%);
     }
 
@@ -137,7 +137,7 @@
     }
 
     .filler {
-        @apply h-[14rem];
+        @apply lg:h-[14rem]; 
     }
 
     .sound {

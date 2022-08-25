@@ -1,6 +1,6 @@
 <template>
-    <div class="main flex flex-col items-center justify-center w-screen h-screen">
-        <h1 class="font-primary text-secondary text-center text-[26rem]">
+    <div class="main flex flex-col items-center justify-center w-screen h-screen lg:gap-0 gap-20">
+        <h1 class="font-primary text-secondary text-center lg:text-[26rem] text-9xl">
             Tu Gucci?
         </h1>
 
@@ -23,7 +23,7 @@
 
 <style scoped>
     .button {
-        @apply w-full h-full py-4 px-8 bg-quaternary text-4xl rounded-2xl text-white;
+        @apply w-full h-full py-4 px-8 bg-quaternary lg:text-4xl rounded-2xl text-white;
     }
     
     body {

@@ -1,5 +1,5 @@
 <template>
-    <div class=" absolute main_chart w-[70vw] h-[70vh] text-5xl flex flex-col gap-10 items-center justify-center" style="opacity: 0">
+    <div class=" absolute main_chart lg:w-[70vw] lg:h-[70vh] lg:text-5xl flex flex-col gap-10 items-center justify-center" style="opacity: 0">
         <div class="chart_container">
             <canvas id ="chartjs">
             </canvas>
@@ -19,6 +19,8 @@
         }
     });
 
+    var mobile = false;
+    window.innerHeight > window.innerWidth ? mobile = true : mobile = false;
 
     if (auth.currentUser == null) {
         window.location.href = "/";
@@ -48,11 +50,12 @@
     }
 
     function redraw() {
-        const ctx = document.querySelector('#chartjs').getContext('2d');
-        Chart.defaults.font.size = 20;
+        
+        Chart.defaults.font.size = mobile ? 5 : 20;
         Chart.defaults.font.family = "Bio Rhyme";
         Chart.defaults.color = "#fff";
-        const chart = new Chart(ctx, {
+        const ctx = document.querySelector('#chartjs').getContext('2d');
+        var chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: sentiments.value.map((sentiment) => sentiment.time_created),
@@ -63,12 +66,12 @@
                     borderColor: 'rgb(255, 99, 132)',
                     tension: 0.1,
                     spanGaps: true,
-                    borderWidth: 5,
+                    borderWidth: mobile ? 1 : 5,
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: !mobile,
                 scales: {
                     x: {
                         display: true,
@@ -96,7 +99,7 @@
                         display: true,
                         text: 'Sentiment over time',
                         font: {
-                            size: 36,
+                            size: mobile ? 14 : 36,
                         },
                     },
                     legend: {
@@ -105,10 +108,10 @@
                 },
                 layout: {
                     padding: {
-                        top: 50,
-                        bottom: 50,
-                        left: 50,
-                        right: 50,
+                        top: mobile ? 10 : 50,
+                        bottom: mobile ? 10 : 50,
+                        left: mobile ? 10 : 50,
+                        right: mobile ? 10 : 50,
                     }
                 }
             },
@@ -128,18 +131,25 @@
             chartToggle: function () {
                 gsap.to(".main_chart", {opacity: this.chartToggle, scale: this.chartToggle, duration: 1.4 * this.chartToggle});
             }
-        }
+        },
+        data: () => ({
+            mobile: false
+        })
     }
 </script>
 
 <style scoped>
     .chart_container {
-        @apply w-[70vw] h-[70vh] rounded-lg shadow-md;
+        @apply lg:w-[70vw] lg:h-[70vh] w-[90vw] h-[50vh] rounded-lg shadow-md;
         background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(10px);
     }
 
+    canvas {
+        @apply w-full h-full;
+    }
+
     g {
-        @apply w-10;
+        @apply lg:w-10;
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
-    <div class="main pt-72 w-screen flex flex-col items-center gap-40">
-        <h1 class="text-9xl font-primary text-secondary">
+    <div class="main lg:pt-72 pt-36 w-screen flex flex-col items-center lg:gap-40 gap-10">
+        <h1 class="lg:text-9xl text-6xl text-center font-primary text-secondary lg:px-0 px-4">
             Welcome to TuGucci!
         </h1>
 
@@ -11,8 +11,8 @@
             </div>
         </div>
         
-        <div class="form lg:w-[35vw] w-[50vw] flex flex-col items-start justify-start p-10 pb-24 gap-10 rounded-xl shadow-lg">
-                <div class="text-6xl font-primary text-quaternary">
+        <div class="form lg:w-[35vw] w-[90vw] flex flex-col items-start justify-start p-10 pb-24 gap-10 rounded-xl shadow-lg">
+                <div class="lg:text-6xl text-5xl font-primary text-quaternary">
                     Sign Up
                 </div>
 
@@ -224,10 +224,10 @@
         @apply w-full flex flex-row gap-4;
     }
     button {
-        @apply text-3xl p-4 border-2 border-primary rounded-xl bg-quinary shadow-lg;
+        @apply lg:text-3xl text-lg p-4 border-2 border-primary rounded-xl bg-quinary shadow-lg;
     }
 
     label {
-        @apply text-4xl font-secondary text-white;
+        @apply lg:text-4xl text-xl font-secondary text-white;
     }
 </style>

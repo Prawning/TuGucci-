@@ -1,6 +1,6 @@
 <template>
-    <div class="main pt-72 gap-40 w-screen flex flex-col items-center justify-evenly">
-        <h1 class="text-9xl font-primary text-secondary">
+    <div class="main lg:pt-72 pt:36 lg:gap-40 gap-10 w-screen flex flex-col items-center justify-start">
+        <h1 class="lg:text-9xl text-6xl font-primary text-secondary">
             Welcome Back!
         </h1>
 
@@ -11,7 +11,7 @@
             </div>
         </div>
         
-        <div class="form lg:w-[35vw] w-[50vw] flex flex-col items-start justify-start p-10 pb-24 gap-10 rounded-xl shadow-lg">
+        <div class="form lg:w-[35vw] w-[90vw] flex flex-col items-start justify-start p-10 pb-24 gap-10 rounded-xl shadow-lg">
                 <div class="text-6xl font-primary text-quaternary">
                     Sign in
                 </div>

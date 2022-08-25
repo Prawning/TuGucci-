@@ -1,5 +1,5 @@
 <template>
-    <div class="goal_board absolute mt-36 w-[55vw] h-[70vh] p-20 flex flex-col gap-10">
+    <div class="goal_board absolute mt-36 lg:w-[55vw] lg:h-[70vh] w-[90vw] lg:p-20 flex flex-col gap-10 py-12 lg:py-20">
         <ul class="flex flex-col items-start gap-10 w-full h-[30vh] overflow-x-hidden overflow-y-auto flex-nowrap z-10">
             <li v-for="goal, index in goals" v-bind:key="index" @click="increase_score">
                 {{goal.data}}
@@ -8,13 +8,13 @@
 
         <div class="w-full z-10 flex flex-col items-center justify-center gap-10">
             <textarea name="entry" id="goal_new_entry" class="h-[15vh] w-full"></textarea>
-            <button id="add_goal" class="entry_button w-full h-2/12 text-5xl">New Goal!</button>
+            <button id="add_goal" class="entry_button lg:w-1/4 w-[70vw] h-2/12 lg:text-5xl text-2xl">New Goal!</button>
         </div>
 
-        <div class="absolute bottom-0 text-9xl font-primary text-tertiary">
+        <div class="absolute bottom-0 lg:text-9xl text-4xl font-primary text-tertiary">
             Score: 
         </div>
-        <div class="absolute bottom-0 right-10 text-9xl font-primary text-tertiary">
+        <div class="absolute bottom-0 right-10 lg:text-9xl text-4xl font-primary text-tertiary">
             {{ score }}
         </div>
     </div>
@@ -92,10 +92,10 @@
 
 <style scoped>
     li {
-        @apply text-quaternary font-secondary text-5xl border-b-2 border-secondary pb-4 w-full;
+        @apply text-quaternary font-secondary lg:text-5xl text-3xl border-b-2 border-secondary pb-4 w-full;
     }
 
     .entry_button {
-        @apply bg-tertiary text-white rounded-3xl p-5 w-1/4;
+        @apply bg-tertiary text-white rounded-3xl p-5;
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <NavBar @init=init_toggle id = "nav-comp" data-music-0 style="z-index: 1" class="fixed h-screen z-100" />
-    <router-view class="w-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle @init=init_toggle @house=house_toggle @chart=chart_toggle @reset=reset_toggle style = "z-index: 0" />
+    <router-view class="w-screen h-screen" @achievements=achievement_toggle @quest=quest_toggle @book=book_toggle @init=init_toggle @house=house_toggle @chart=chart_toggle @reset=reset_toggle style = "z-index: 0" />
     <canvas class="webgl" data-logged=0 data-ach=1 data-quest=1 data-book=1 data-house=1 data-chart=1></canvas>
 </template>
 
@@ -45,7 +45,7 @@
                 }
             });
 
-            window.addEventListener("click", this.add_music);
+            // window.addEventListener("click", this.add_music);
         },
         data() {
             return {
@@ -117,6 +117,10 @@
 
     ::-webkit-scrollbar-thumb {
         background: hsla(0, 0%, 100%, 0.2);
+    }
+
+    :root {
+        font-size: max(11px, calc(0.3vw + 0.5vh));
     }
 
     @supports (scrollbar-color: red blue) {

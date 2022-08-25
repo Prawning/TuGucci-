@@ -29,6 +29,7 @@
                     </p>
 
                     <p>
+                        We can add a good memories section here, by picking out top 5 journal entries
                         You have been doing great! Keep up the self love, and keep on being you!
                     </p>
 

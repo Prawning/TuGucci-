@@ -1,6 +1,6 @@
 <template>
-    <div class="w-screen h-screen flex items-center justify-center">
-        <div class="w-[70vw] flex flex-col items-start justify-center gap-10 main_about">
+    <div class="w-screen lg:h-screen flex items-center justify-center">
+        <div class="lg:w-[70vw] flex flex-col items-start justify-center gap-10 main_about w-[90%]">
             <h1 clsss="">
                 Welcome to TuGucci!
             </h1>
@@ -59,18 +59,22 @@
 <style scoped>
 
     h1 {
-        @apply text-[10rem] font-primary text-secondary self-center;
+        @apply lg:text-[10rem] text-6xl text-center font-primary text-secondary self-center;
     }
     p {
-        @apply text-3xl text-quinary font-secondary text-left;
+        @apply lg:text-3xl text-quinary font-secondary text-left;
     }
 
     u {
-        @apply text-3xl text-quaternary font-secondary text-left underline;
+        @apply lg:text-3xl text-quaternary font-secondary text-left underline;
+    }
+
+    h2 {
+        @apply lg:text-4xl text-3xl
     }
 
     .main_about {
-        @apply p-10 rounded-xl;
+        @apply p-10 rounded-xl lg:mt-0 mt-[20rem] mb-20;
         background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(50px);
     }

@@ -1,22 +1,22 @@
 <template>
-    <div class="main_quest w-[70vw] h-[70vh] flex flex-col items-center justify-center" style="opacity:0">
-        <div class="flex flex-col w-[70vw] questions py-40 px-10 rounded-3xl shadow-lg">
-            <div class="actual_question text-6xl font-primary text-secondary">
+    <div class="main_quest lg:w-[70vw] lg:h-[70vh] h-[50vh] w-[90vw] flex flex-col items-center justify-center" >
+        <div class="flex flex-col lg:w-[70vw] w-[90vw] questions lg:py-40 lg:px-10 py-10 px-4 rounded-3xl shadow-lg">
+            <div class="actual_question lg:text-6xl text-4xl font-primary text-secondary">
                 {{questions[page].question}}
             </div>
 
-            <div class="description text-3xl font-secondary text-quinary mt-20">
+            <div class="description lg:text-3xl text-2xl font-secondary text-quinary mt-20">
                 {{questions[page].description}}
             </div>
 
             <div class="w-full h-full flex flex-col gap-3 mt-20">
-                <div v-for="(options, index) in questions[page].answers" :key=index class="options text-white font-secondary text-5xl z-20" @click=selected_option(index)>
+                <div v-for="(options, index) in questions[page].answers" :key=index class="options text-white font-secondary lg:text-5xl text-lg z-20" @click=selected_option(index)>
                     {{options}}
                 </div>
             </div>
 
         </div>
-        <div @click=reset_page class="absolute top-10 right-10 rounded-xl text-3xl font-secondary text-quaternary exit p-10">
+        <div @click=reset_page class="absolute lg:top-10 lg:right-10 md:top-10 md:right-10 bottom-10 left-10 rounded-xl lg:text-3xl text-lg font-secondary text-quaternary exit lg:p-10 p-2">
             Redo Quiz!
         </div>
     </div>
@@ -25,7 +25,7 @@
 <script setup>
     import {auth, db} from "../main.js";
     import { useRouter } from 'vue-router';
-    import {collection, addDoc, getDocs, query, where, updateDoc, onSnapshot} from "firebase/firestore";
+    import {collection, addDoc, getDocs, query, where, updateDoc, onSnapshot, doc} from "firebase/firestore";
     const props = defineProps({
         questToggle: {
             required: true,
@@ -247,6 +247,7 @@
         methods: {
             async selected_option(index) {
                     this.page = this.questions[this.page].redirects[index]; // update page
+                    document.querySelector(".main_quest").style.opacity = 1;
                     // everytime page is updated, update the user's progress too on firestore
                     var uuid = auth.currentUser.uid;
                     var q = query(collection(db,"users"), where("user_uid", "==", uuid));
@@ -254,7 +255,7 @@
                     snapshot.forEach((doc) => {
                         updateDoc(doc.ref, {page: this.page});
                     });
-
+                    
                     // gsap magic
                     // const actual_question = document.querySelector(".actual_question");
                     // const description = document.querySelector(".description");
@@ -285,7 +286,6 @@
             var snapshot = await getDocs(q);
             snapshot.forEach((doc) => {
                 this.page = doc.data().page; // loads the current page of the user
-                this.lastKnown = doc.data().page
             });
             document.querySelector(".main_quest").style.opacity = this.questToggle;
 

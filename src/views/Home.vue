@@ -1,14 +1,14 @@
 <template>
-    <div class="main flex flex-col items-center justify-center w-screen h-screen gap-10">
-        <h1 v-show=toured class="fixed top-10 text-[8rem] text-secondary font-primary title" v-bind:id="user">
+    <div class="main flex flex-col items-center justify-center lg:w-screen lg:h-screen w-[99vw] h-[99vh] gap-10 overflow-hidden relative">
+        <h1 v-show=toured class="fixed lg:top-10 top-50 lg:text-[8rem] text-6xl text-secondary font-primary title text-center" v-bind:id="user">
             Everything will be gucci, {{user}}!
         </h1>
 
-        <div v-show=!toured class="floating_start text-[9rem] w-[30vw] h-[15vh] flex items-center justify-center rounded-xl text-primary text-center font-primary shadow-2xl z-10 cursor-pointer" @click=start_tour>
+        <div v-show=!toured class="floating_start lg:text-[9rem] text-4xl w-[30vw] h-[15vh] flex items-center justify-center rounded-xl text-primary text-center font-primary shadow-2xl z-10 cursor-pointer" @click=start_tour>
             Get Started
         </div>
 
-        <div v-show=!toured class="fixed explainer w-[40vw] flex flex-col z-[9]" style="opacity: 0">
+        <div v-show=!toured class="fixed explainer flex flex-col z-[9]" style="opacity: 0">
             <div class = "button_parent text w-full flex flex-col gap-10">
                 <p class ="para">
                     Welcome to TuGucci?, and relax yourself!
@@ -23,7 +23,7 @@
 
         </div>
 
-        <div v-show=toured class="control_bar fixed bottom-10 side_bar w-screen flex justify-evenly gap-10 text-4xl font-primary text-secondary" style="transform: scale(1)">
+        <div v-show=toured class="control_bar fixed bottom-10 side_bar w-screen flex justify-evenly lg:gap-10 gap-2 font-primary text-secondary" style="transform: scale(1)">
             <div class="cta book" @click=toggle_journal style="visibility:visible">
                 Journal
             </div>
@@ -107,6 +107,7 @@
                     };
                 });
             });
+            document.querySelector("#main_quest").style.opacity = 0;
             document.querySelector(".retour").addEventListener("click", this.restart_tour);
             document.querySelector(".home").addEventListener("click", this.reset_ui);
             this.toggle_init();
@@ -123,6 +124,7 @@
 
     function reset_ui() {
         // set all toggles to 0
+        console.log("reset being triggerd")
         achievements = 0;
         journal = 0;
         questions = 0;
@@ -223,9 +225,11 @@
         questions = 1 - questions;
         if (questions) {
             el.style.pointerEvents = "auto";
+            el.style.opacity = 1;
             el.style.zIndex = 25;
         } else {
             el.style.pointerEvents = "none";
+            el.style.opacity = 0;
             el.style.zIndex = -1;
         }
         gsap.to(".goal", {opacity: 1-questions, duration: 1}); // disallow jumping to the other two
@@ -289,6 +293,7 @@
 
     function start_tour() {
         var functions = [this.toggle_journal, this.toggle_achievements, this.toggle_questions, this.toggle_house];
+        var mobile = window.innerHeight > window.innerWidth;
         // remove button
         var button = document.querySelector(".floating_start");
         var timeline = gsap.timeline();
@@ -300,6 +305,7 @@
         var next_button = document.querySelector(".next_button");
         timeline.to(explainer, {opacity: 1, duration: 1, onComplete: () => {
         }});
+
 
         
         // paras
@@ -315,23 +321,40 @@
 
         // gsaps to tween between paras
         var journal_tween = gsap.to(text, {text : {value: paras[0], delimiter:" ", padSpace:true}, duration: 3, delay: 1});
-        var journal_explainer = gsap.to(explainer, {width: "30vw", right: 400, zIndex: 100,  duration: 1, delay: 1});
+        if (mobile) {
+            var journal_explainer = gsap.to(explainer, {zIndex: 100});
+        } else {
+            var journal_explainer = gsap.to(explainer, {width: "30vw", right: 400, zIndex: 100,  duration: 1, delay: 1});
+        }
         journal_tween.pause();
         journal_explainer.pause();
 
         var goal_tween = gsap.to(text, {text : {value: paras[1], delimiter:" ", padSpace:true}, duration: 1});
-        var goal_explainer = gsap.to(explainer, {width: "20vw", top: "50%", left: 10, duration: 1});
+        if (mobile) {
+           var goal_explainer = gsap.to(explainer, {zIndex: 100});
+        } else {
+            var goal_explainer = gsap.to(explainer, {width: "20vw", top: "50%", left: 10, duration: 1});
+
+        }
         goal_tween.pause();
         goal_explainer.pause();
 
 
         var quest_tween = gsap.to(text, {text : {value: paras[2], delimiter: " ", padSpace:true}, duration: 1});
-        var quest_explainer = gsap.to(explainer, {width: "50vw", xPercent: -50, yPercent: -50, top:"50%", left:"50%", duration: 1});
+        if (mobile) {
+            var quest_explainer = gsap.to(explainer, {zIndex: 100});
+        } else {
+            var quest_explainer = gsap.to(explainer, {width: "50vw", xPercent: -50, yPercent: -50, top:"50%", left:"50%", duration: 1});
+        }
         quest_tween.pause();
         quest_explainer.pause();
 
         var outro_tween = gsap.to(text, {text : {value: paras[3], delimiter: " ", padSpace:true}, duration: 3});
-        var outro_explainer = gsap.to(explainer, {width: "25vw", bottom: 100, duration: 1});
+        if (mobile) {
+           var outro_explainer = gsap.to(explainer, {zIndex: 100});
+        } else {
+            var outro_explainer = gsap.to(explainer, {width: "25vw", bottom: 100, duration: 1});
+        }
         outro_tween.pause();
         outro_explainer.pause();
 
@@ -407,15 +430,11 @@
 
 <style scoped>
 
-    .title {
-        text-shadow: 2px 2px #000000;
-    }
-
     .cta {
         background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(10px);
         /* text-shadow: 1px 0px white; */
-        @apply px-8 py-4 rounded-md shadow-lg cursor-pointer;
+        @apply lg:px-8 lg:py-4 rounded-md shadow-lg cursor-pointer lg:text-4xl text-sm p-4;
     }
 
     p {
@@ -439,6 +458,16 @@
     }
 
     .explainer {
-        @apply font-secondary;
+        width: 90vw;
+        @apply font-secondary left-0;
     }
+
+    /* .para {
+        width: 90vw;
+    }
+
+    .button_parent {
+        width: 90vw;
+        @apply left-0 top-1/2 absolute;
+    } */
 </style>
