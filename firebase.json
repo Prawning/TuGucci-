@@ -17,8 +17,8 @@
       }
     ],
     "redirects": [ {
-      "source": "*",
-      "destination": "/",
+      "source": "**",
+      "destination": "/index.html",
       "type": 301
     } ]
   },
