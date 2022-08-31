@@ -38,7 +38,7 @@
                 data.push({id: doc.id, data: doc.data().entry, sorting: doc.data().date.toDate().getTime()});
             });
             data.sort((a, b) => a.sorting - b.sorting);
-            journal_entries.value = data;
+            journal_entries.value = data.reverse();
         });
         document.querySelector(".main_journal").style.opacity = props.journalToggle;
         document.querySelector("#journal_entry").addEventListener("click", add_entry);
