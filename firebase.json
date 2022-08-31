@@ -15,7 +15,12 @@
         "source": "*",
         "desitination": "/index.html"
       }
-    ]
+    ],
+    "redirects": [ {
+      "source": "*",
+      "destination": "/",
+      "type": 301
+    } ]
   },
   "functions": {
     "source": "functions"
