@@ -16,5 +16,4 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TUGUCCI_7E545 }}'
-          channelId: jovian_preview
           projectId: tugucci-7e545
