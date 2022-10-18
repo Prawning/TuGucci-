@@ -7,7 +7,8 @@ module.exports = {
   theme: {
     extend: {
         fontFamily: {
-            primary : ['BioRhyme', 'sans-serif'],
+            // primary : ['BioRhyme', 'sans-serif'],
+            primary: ['Roboto', 'sans-serif'],
             secondary : ['Cabin', 'sans-serif'],
         },
         colors: {

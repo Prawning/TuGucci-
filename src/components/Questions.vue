@@ -16,7 +16,7 @@
             </div>
 
         </div>
-        <div @click=reset_page class="absolute w-20 h-20 lg:top-10 lg:right-0 md:top-10 md:right-10 bottom-10 left-10 rounded-xl lg:text-3xl text-lg font-secondary text-quaternary exit lg:p-10 p-2">
+        <div @click=reset_page class="absolute w-auto flex text-center items-center align-center h-20 lg:top-10 lg:right-10 md:top-10 md:right-10 bottom-10 rounded-xl lg:text-3xl text-lg font-secondary text-quaternary exit lg:p-10 p-2">
             Redo Quiz!
         </div>
     </div>

@@ -70,7 +70,7 @@
                 // todo add popup
                 setTimeout(() => {
                     window.location.href = "/";
-                }, 5000);
+                }, 3000);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -100,7 +100,7 @@
                 create_user(result.user.uid, result.user.email, result.user.displayName);
                 setTimeout(() => {
                     window.location.href = "/";
-                }, 5000);      
+                }, 3000);      
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -121,7 +121,7 @@
                 page: 1,
                 toured: false,
                 profile_picture: "",
-                joined: new Date().getDate(),
+                joined: new Date().getDate().toString() + "/" + (new Date().getMonth() + 1).toString() + "/" + new Date().getFullYear().toString(),
             });
             create_journal(user_uid);
             create_goals(user_uid);

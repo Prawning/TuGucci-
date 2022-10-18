@@ -23,18 +23,17 @@
                     </div>
                 </div>
 
-                <div class="w-1/2 h-full text-5xl font-primary flex flex-col items-center justify-center">
+                <div class="w-1/2 h-full text-5xl font-primary flex flex-col items-center justify-around">
                     <p>
                         Score: {{score}}
                     </p>
 
                     <p>
-                        We can add a good memories section here, by picking out top 5 journal entries
-                        You have been doing great! Keep up the self love, and keep on being you!
+                        Contact: {{contact}}
                     </p>
 
-                    <p>
-                        Edit Profile
+                    <p @click=add_contact>
+                        Add Emergency Contact
                     </p>
                 </div>
             </div>
@@ -56,6 +55,7 @@
             user: '',
             score: 0,
             chart_toggle: 0,
+            contact: '',
             join_date: '',
             profile_pic: '',
         }),
@@ -82,7 +82,8 @@
             }
         },
         methods: {
-            toggle_chart
+            toggle_chart,
+            add_contact,
         }
     }
 
@@ -90,6 +91,22 @@
         chart = 1 - chart;
         this.$emit("chart");
         this.chart_toggle = 1 - this.chart_toggle;
+    }
+
+    function add_contact() {
+        var contact = prompt("Please enter your emergency contact's phone number", "123-456-7890");
+        if (contact != null) {
+            var uuid = auth.currentUser.uid;
+            var user_q = query(collection(db, "users"), where("user_uid", "==", uuid));
+            getDocs(user_q).then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    updateDoc(doc.ref, {
+                        contact: contact,
+                    });
+                });
+            });
+            this.contact = contact;
+        }
     }
 
 </script>

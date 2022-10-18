@@ -8,12 +8,15 @@
             Get Started
         </div>
 
-        <div v-show=!toured class="fixed explainer flex flex-col z-[9]" style="opacity: 0">
-            <div class = "button_parent text w-full flex flex-col gap-10">
+        <div v-show=!toured class="fixed explainer items-center align-center flex flex-col z-[9]" style="opacity: 0">
+            <div class = "button_parent text flex flex-col gap-10">
                 <p class ="para">
                     Welcome to TuGucci?, and relax yourself!
+                    <br>
                     Immerse yourself in this relaxing scene and let your mind wander.
+                    <br>
                     You can listen to the peaceful atmosphere, and enjoy the surroundings, to help calm you down.
+                    <br>
                     Or you can try one of our many features, to help you keep track of your mental health.
                 </p>
                 <div class="next_button" style="opacity: 0">
@@ -320,7 +323,7 @@
                     `We hope you enjoy your stay here at TuGucci!`];
 
         // gsaps to tween between paras
-        var journal_tween = gsap.to(text, {text : {value: paras[0], delimiter:" ", padSpace:true}, duration: 3, delay: 1});
+        var journal_tween = gsap.to(text, {text : {value: paras[0], delimiter:" ", padSpace:true}, duration: .3, delay: .1});
         if (mobile) {
             var journal_explainer = gsap.to(explainer, {zIndex: 100});
         } else {
@@ -329,7 +332,7 @@
         journal_tween.pause();
         journal_explainer.pause();
 
-        var goal_tween = gsap.to(text, {text : {value: paras[1], delimiter:" ", padSpace:true}, duration: 1});
+        var goal_tween = gsap.to(text, {text : {value: paras[1], delimiter:" ", padSpace:true}, duration: .1});
         if (mobile) {
            var goal_explainer = gsap.to(explainer, {zIndex: 100});
         } else {
@@ -340,7 +343,7 @@
         goal_explainer.pause();
 
 
-        var quest_tween = gsap.to(text, {text : {value: paras[2], delimiter: " ", padSpace:true}, duration: 1});
+        var quest_tween = gsap.to(text, {text : {value: paras[2], delimiter: " ", padSpace:true}, duration: .1});
         if (mobile) {
             var quest_explainer = gsap.to(explainer, {zIndex: 100});
         } else {
@@ -349,7 +352,7 @@
         quest_tween.pause();
         quest_explainer.pause();
 
-        var outro_tween = gsap.to(text, {text : {value: paras[3], delimiter: " ", padSpace:true}, duration: 3});
+        var outro_tween = gsap.to(text, {text : {value: paras[3], delimiter: " ", padSpace:true}, duration: 0.1});
         if (mobile) {
            var outro_explainer = gsap.to(explainer, {zIndex: 100});
         } else {

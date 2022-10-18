@@ -45,7 +45,7 @@
                 }
             });
 
-            // window.addEventListener("click", this.add_music);
+            window.addEventListener("click", this.add_music);
         },
         data() {
             return {
